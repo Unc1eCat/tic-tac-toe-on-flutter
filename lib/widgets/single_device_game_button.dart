@@ -14,6 +14,14 @@ import 'package:tic_tac_toe/widgets/white_button.dart';
 * Whoever writes this form more clear effective and performant is a hero. I would appreciate ur pr.
 */
 
+// class SingleDeviceFormOutput
+// {
+//   int gridWidth;
+//   int gridHeight;
+//   int winLenght;
+//   List<SingleDeviceGameSettingsPlayerListItem> players = [];
+// }
+
 class SingleDeviceGameButton extends StatefulWidget {
   @override
   _SingleDeviceGameButtonState createState() => _SingleDeviceGameButtonState();
@@ -36,6 +44,7 @@ Widget _wrapInCard(Widget child, {EdgeInsetsGeometry margin = const EdgeInsets.a
 
 class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with TickerProviderStateMixin {
   var _form = GlobalKey<FormState>();
+  var _playerSignsListState = GlobalKey<_SingleDeviceGameSettingsPlayerListState>();
   var expanded = false;
   var args = SingleDeviceGameArguments();
 
@@ -63,6 +72,8 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
 
   void _play() async {
     _form.currentState.save();
+    args.players = _playerSignsListState.currentState.playerSigns.map((e) => e.value).toList();
+    // print(args.players);
     Navigator.pushReplacementNamed(context, GameScreen.ROUTE_NAME, arguments: args);
   }
 
@@ -154,32 +165,13 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
                   if (expanded)
                     _wrapInCard(
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 200,
-                              child: SingleDeviceGameSettingsPlayerList(
-                                [
-                                  PlayerSign(id: "0", color: Colors.red, name: "x", guiDelegate: SignGUIDelegates.x),
-                                  PlayerSign(id: "1", color: Colors.blue, name: "o", guiDelegate: SignGUIDelegates.o),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 16),
-                            WhiteButton(
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.add),
-                                    Text(" ADD PLAYER"),
-                                  ],
-                                ),
-                              ),
-                            ),
+                        padding: const EdgeInsets.all(5),
+                        child: SingleDeviceGameSettingsPlayerList(
+                          [
+                            PlayerSign(id: "0", color: Colors.red, name: "x", guiDelegate: SignGUIDelegates.x),
+                            PlayerSign(id: "1", color: Colors.blue, name: "o", guiDelegate: SignGUIDelegates.o),
                           ],
+                          key: _playerSignsListState,
                         ),
                       ),
                     ),
@@ -295,10 +287,10 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
 
 class SingleDeviceGameSettingsPlayerListItem {
   int currentIndex;
-  ValueKey<int> key;
+  ValueKey<int> key; // Maybe I will replace it with the id of the player sign.
   PlayerSign value;
 
-  SingleDeviceGameSettingsPlayerListItem(this.key, this.value);
+  SingleDeviceGameSettingsPlayerListItem(this.key, this.value, this.currentIndex);
 }
 
 class SingleDeviceGameSettingsPlayerListItemWidget extends StatelessWidget {
@@ -308,8 +300,6 @@ class SingleDeviceGameSettingsPlayerListItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var args = Provider.of<SingleDeviceGameArguments>(context);
-
     Widget content = SizedBox(
       height: 45,
       child: Row(
@@ -319,12 +309,12 @@ class SingleDeviceGameSettingsPlayerListItemWidget extends StatelessWidget {
         children: [
           Flexible(
             child: _wrapInCard(
-              TextFormField(
+              TextField(
                 // TODO: Make the name have max lenght
                 cursorRadius: Radius.circular(2.5),
                 enableSuggestions: true,
                 keyboardType: TextInputType.name,
-                onSaved: (newValue) => args.players[data.currentIndex] = data.value.copyWith(name: newValue),
+                onChanged: (newValue) => data.value = data.value.copyWith(name: newValue),
                 textAlign: TextAlign.center,
                 textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
@@ -332,27 +322,34 @@ class SingleDeviceGameSettingsPlayerListItemWidget extends StatelessWidget {
                   hintText: "Player name",
                 ),
                 cursorColor: Colors.white54,
-                initialValue: data.value.name,
+                controller: TextEditingController(text: data.value.name),
                 style: Theme.of(context).textTheme.headline6,
               ),
               margin: EdgeInsets.zero,
             ),
           ),
           SizedBox(width: 12),
-          FormField<SignGUIDelegate>(
-            initialValue: data.value.guiDelegate,
-            onSaved: (newValue) => args.players[data.currentIndex] = args.players[data.currentIndex].copyWith(guiDelegate: newValue),
-            builder: (field) => WhiteButton(
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: field.value.guiSmall(context, Colors.white),
-              ),
+          // FormField<SignGUIDelegate>(
+          //   initialValue: data.value.guiDelegate,
+          //   onSaved: (newValue) => data.value = data.value.copyWith(guiDelegate: newValue),
+          //   builder: (field) => WhiteButton(
+          //     child: Padding(
+          //       padding: const EdgeInsets.all(8),
+          //       child: field.value.guiSmall(context, Colors.white),
+          //     ),
+          //   ),
+          // ),
+          WhiteButton(
+            onPressed: () {/* Open sign selector */},
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: data.value.guiDelegate.guiSmall(context, Colors.white),
             ),
           ),
           SizedBox(width: 16),
-          ColorInputFormField(
+          ColorInput(
             initialValue: data.value.color,
-            onSaved: (newValue) => args.players[data.currentIndex] = args.players[data.currentIndex].copyWith(color: newValue),
+            onChanged: (newValue) => data.value = data.value.copyWith(color: newValue),
           ),
           SizedBox(width: 10),
           DelayedReorderableListener(
@@ -366,11 +363,14 @@ class SingleDeviceGameSettingsPlayerListItemWidget extends StatelessWidget {
     );
 
     return ReorderableItem(
-      key: ValueKey(data.key.value),
+      key: data.key,
       childBuilder: (context, state) {
         content = Opacity(
           opacity: state == ReorderableItemState.placeholder ? 0.1 : 1.0,
-          child: content,
+          child: Padding(
+            padding: const EdgeInsets.all(5),
+            child: content,
+          ),
         );
         return content;
       },
@@ -393,34 +393,56 @@ class SingleDeviceGameSettingsPlayerList extends StatefulWidget {
 class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSettingsPlayerList> {
   List<SingleDeviceGameSettingsPlayerListItem> _playerSigns = [];
 
+  List<SingleDeviceGameSettingsPlayerListItem> get playerSigns => List.unmodifiable(_playerSigns);
+
   @override
   void didChangeDependencies() {
     for (var i = 0; i < widget._playerSigns.length; i++) {
-      _playerSigns.add(SingleDeviceGameSettingsPlayerListItem(ValueKey(i), widget._playerSigns[i]));
+      _playerSigns.add(SingleDeviceGameSettingsPlayerListItem(ValueKey(i), widget._playerSigns[i], i));
     }
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ReorderableList(
-      onReorder: (draggedItem, newPosition) {
-        var oldIndex = _playerSigns.indexWhere((e) => e.key == draggedItem);
-        var newIndex = _playerSigns.indexWhere((e) => e.key == newPosition);
-        final item = _playerSigns[oldIndex];
+    return Column(
+      children: [
+        SizedBox(
+          height: 300,
+          child: ReorderableList(
+            onReorder: (draggedItem, newPosition) {
+              var oldIndex = _playerSigns.indexWhere((e) => e.key == draggedItem);
+              var newIndex = _playerSigns.indexWhere((e) => e.key == newPosition);
+              final item = _playerSigns[oldIndex];
 
-        setState(() {
-          item.currentIndex = newIndex;
-          _playerSigns.removeAt(oldIndex);
-          _playerSigns.insert(newIndex, item);
-          print("Reoredering [$oldIndex] -> [$newIndex]");
-        });
-        return true;
-      },
-      child: ListView.builder(
-        itemBuilder: (context, index) => SingleDeviceGameSettingsPlayerListItemWidget(_playerSigns[index]),
-        itemCount: _playerSigns.length,
-      ),
+              setState(() {
+                item.currentIndex = newIndex;
+                _playerSigns.removeAt(oldIndex);
+                _playerSigns.insert(newIndex, item);
+                print("Reoredering [$oldIndex] -> [$newIndex]");
+              });
+              return true;
+            },
+            child: ListView.builder( // TODO: Make be part of the "root" column
+              itemBuilder: (context, index) => SingleDeviceGameSettingsPlayerListItemWidget(_playerSigns[index]),
+              itemCount: _playerSigns.length,
+            ),
+          ),
+        ),
+        SizedBox(height: 16),
+        WhiteButton(
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.add),
+                Text(" ADD PLAYER"),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

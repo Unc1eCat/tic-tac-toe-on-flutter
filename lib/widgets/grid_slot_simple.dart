@@ -57,10 +57,14 @@ class GridSlotSimpleWidgetState extends State<GridSlotSimpleWidget> with StateHe
               )
             : (highlight
                 ? SlotHighlightment(
-                    child: sign.guiSmall(context),
+                    child: Center(
+                      child: sign.guiSmall(context),
+                    ),
                     color: sign.color,
                   )
-                : sign.guiSmall(context));
+                : Center(
+                    child: sign.guiSmall(context),
+                  ));
       },
     );
   }
