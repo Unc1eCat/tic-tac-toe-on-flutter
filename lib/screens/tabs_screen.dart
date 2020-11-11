@@ -26,7 +26,7 @@ class _TabsScreenState extends State<TabsScreen> with SingleTickerProviderStateM
         controller: _controller,
         children: [
           PlayTab(),
-          MyHomePage(),
+          HomePage(),
           PlayTab(),
         ],
       ),

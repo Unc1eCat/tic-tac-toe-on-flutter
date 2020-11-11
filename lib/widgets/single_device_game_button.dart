@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
 import 'package:my_utilities/color_utils.dart';
+import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/models/player_signs.dart';
 import 'package:tic_tac_toe/models/sd_game_args.dart';
 import 'package:tic_tac_toe/screens/game_screen.dart';
 import 'package:tic_tac_toe/widgets/color_input_form_field.dart';
 import 'package:tic_tac_toe/widgets/number_input_form_field.dart';
 import 'package:tic_tac_toe/widgets/white_button.dart';
-import 'dart:math' as math;
+
+/* ! ATTENTION ! 
+* Whoever writes this form more clear effective and performant is a hero. I would appreciate ur pr.
+*/
 
 class SingleDeviceGameButton extends StatefulWidget {
   @override
@@ -68,123 +72,125 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
     var content = expanded
         ? Form(
             key: _form,
-            child: Column(
-              children: [
-                if (expanded)
-                  _wrapInCard(
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  "Grid width",
-                                  style: Theme.of(context).textTheme.headline6,
+            child: Provider.value(
+              value: args,
+              child: Column(
+                children: [
+                  if (expanded)
+                    _wrapInCard(
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    "Grid width",
+                                    style: Theme.of(context).textTheme.headline6,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(width: 10),
-                              NumberInputFormField(
-                                onSaved: (newValue) => args.gridWidth = newValue,
-                                initialValue: 3,
-                                min: 2,
-                                max: 20,
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 16),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  "Grid height",
-                                  style: Theme.of(context).textTheme.headline6,
+                                SizedBox(width: 10),
+                                NumberInputFormField(
+                                  onSaved: (newValue) => args.gridWidth = newValue,
+                                  initialValue: 3,
+                                  min: 2,
+                                  max: 20,
                                 ),
-                              ),
-                              SizedBox(width: 10),
-                              NumberInputFormField(
-                                onSaved: (newValue) => args.gridHeight = newValue,
-                                initialValue: 3,
-                                min: 2,
-                                max: 20,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                if (expanded)
-                  _wrapInCard(
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  "Row lenght required to win",
-                                  style: Theme.of(context).textTheme.headline6,
-                                ),
-                              ),
-                              SizedBox(width: 10),
-                              NumberInputFormField(
-                                onSaved: (newValue) => args.winLenght = newValue,
-                                initialValue: 3,
-                                min: 2,
-                                max: 20,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                if (expanded)
-                  _wrapInCard(
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 200,
-                            child: SingleDeviceGameSettingsPlayerList(
-                              args,
-                              [
-                                PlayerSign(id: "0", color: Colors.red, name: "x", guiDelegate: SignGUIDelegates.x),
-                                PlayerSign(id: "1", color: Colors.blue, name: "o", guiDelegate: SignGUIDelegates.o),
                               ],
                             ),
-                          ),
-                          SizedBox(height: 16),
-                          WhiteButton(
-                            child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.add),
-                                  Text(" ADD PLAYER"),
+                            SizedBox(height: 16),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    "Grid height",
+                                    style: Theme.of(context).textTheme.headline6,
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                NumberInputFormField(
+                                  onSaved: (newValue) => args.gridHeight = newValue,
+                                  initialValue: 3,
+                                  min: 2,
+                                  max: 20,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  if (expanded)
+                    _wrapInCard(
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    "Row lenght required to win",
+                                    style: Theme.of(context).textTheme.headline6,
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                NumberInputFormField(
+                                  onSaved: (newValue) => args.winLenght = newValue,
+                                  initialValue: 3,
+                                  min: 2,
+                                  max: 20,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  if (expanded)
+                    _wrapInCard(
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 200,
+                              child: SingleDeviceGameSettingsPlayerList(
+                                [
+                                  PlayerSign(id: "0", color: Colors.red, name: "x", guiDelegate: SignGUIDelegates.x),
+                                  PlayerSign(id: "1", color: Colors.blue, name: "o", guiDelegate: SignGUIDelegates.o),
                                 ],
                               ),
                             ),
-                          ),
-                        ],
+                            SizedBox(height: 16),
+                            WhiteButton(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.add),
+                                    Text(" ADD PLAYER"),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                if (expanded) Divider(),
-                if (expanded)
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: SizedBox(width: double.infinity, height: 50, child: WhiteButton(child: Text("PLAY"), onPressed: _play)),
-                  ),
-              ],
+                  if (expanded) Divider(),
+                  if (expanded)
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: SizedBox(width: double.infinity, height: 50, child: WhiteButton(child: Text("PLAY"), onPressed: _play)),
+                    ),
+                ],
+              ),
             ),
           )
         : null;
@@ -287,30 +293,23 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
   }
 }
 
-class SingleDeviceGameSettingsPlayerList extends StatefulWidget {
-  final SingleDeviceGameArguments args;
-  final List<PlayerSign> initialValue;
+class SingleDeviceGameSettingsPlayerListItem {
+  int currentIndex;
+  ValueKey<int> key;
+  PlayerSign value;
 
-  const SingleDeviceGameSettingsPlayerList(
-    this.args,
-    this.initialValue, {
-    Key key,
-  }) : super(key: key);
-
-  @override
-  _SingleDeviceGameSettingsPlayerListState createState() => _SingleDeviceGameSettingsPlayerListState();
+  SingleDeviceGameSettingsPlayerListItem(this.key, this.value);
 }
 
-class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSettingsPlayerList> {
-  List<PlayerSign> _playerSigns;
+class SingleDeviceGameSettingsPlayerListItemWidget extends StatelessWidget {
+  final SingleDeviceGameSettingsPlayerListItem data;
+
+  SingleDeviceGameSettingsPlayerListItemWidget(this.data);
 
   @override
-  void didChangeDependencies() {
-    _playerSigns = widget.initialValue;
-    super.didChangeDependencies();
-  }
+  Widget build(BuildContext context) {
+    var args = Provider.of<SingleDeviceGameArguments>(context);
 
-  Widget _buildPlayerItem(int index) {
     Widget content = SizedBox(
       height: 45,
       child: Row(
@@ -325,7 +324,7 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
                 cursorRadius: Radius.circular(2.5),
                 enableSuggestions: true,
                 keyboardType: TextInputType.name,
-                onSaved: (newValue) => widget.args.players[index] = _playerSigns[index].copyWith(name: newValue),
+                onSaved: (newValue) => args.players[data.currentIndex] = data.value.copyWith(name: newValue),
                 textAlign: TextAlign.center,
                 textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
@@ -333,7 +332,7 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
                   hintText: "Player name",
                 ),
                 cursorColor: Colors.white54,
-                initialValue: _playerSigns[index].name,
+                initialValue: data.value.name,
                 style: Theme.of(context).textTheme.headline6,
               ),
               margin: EdgeInsets.zero,
@@ -341,9 +340,8 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
           ),
           SizedBox(width: 12),
           FormField<SignGUIDelegate>(
-            // key: ValueKey(index),
-            initialValue: _playerSigns[index].guiDelegate,
-            onSaved: (newValue) => widget.args.players[index] = _playerSigns[index].copyWith(guiDelegate: newValue),
+            initialValue: data.value.guiDelegate,
+            onSaved: (newValue) => args.players[data.currentIndex] = args.players[data.currentIndex].copyWith(guiDelegate: newValue),
             builder: (field) => WhiteButton(
               child: Padding(
                 padding: const EdgeInsets.all(8),
@@ -353,9 +351,8 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
           ),
           SizedBox(width: 16),
           ColorInputFormField(
-            // key: ValueKey(index),
-            initialValue: _playerSigns[index].color,
-            onSaved: (newValue) => widget.args.players[index] = _playerSigns[index].copyWith(color: newValue),
+            initialValue: data.value.color,
+            onSaved: (newValue) => args.players[data.currentIndex] = args.players[data.currentIndex].copyWith(color: newValue),
           ),
           SizedBox(width: 10),
           DelayedReorderableListener(
@@ -369,26 +366,51 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
     );
 
     return ReorderableItem(
-      key: ValueKey(index),
+      key: ValueKey(data.key.value),
       childBuilder: (context, state) {
-          content = Opacity(
-            opacity: state == ReorderableItemState.placeholder ? 0.1 : 1.0,
-            child: content,
-          );
+        content = Opacity(
+          opacity: state == ReorderableItemState.placeholder ? 0.1 : 1.0,
+          child: content,
+        );
         return content;
       },
     );
+  }
+}
+
+class SingleDeviceGameSettingsPlayerList extends StatefulWidget {
+  final List<PlayerSign> _playerSigns;
+
+  const SingleDeviceGameSettingsPlayerList(
+    this._playerSigns, {
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _SingleDeviceGameSettingsPlayerListState createState() => _SingleDeviceGameSettingsPlayerListState();
+}
+
+class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSettingsPlayerList> {
+  List<SingleDeviceGameSettingsPlayerListItem> _playerSigns = [];
+
+  @override
+  void didChangeDependencies() {
+    for (var i = 0; i < widget._playerSigns.length; i++) {
+      _playerSigns.add(SingleDeviceGameSettingsPlayerListItem(ValueKey(i), widget._playerSigns[i]));
+    }
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
     return ReorderableList(
       onReorder: (draggedItem, newPosition) {
-        var oldIndex = (draggedItem as ValueKey<int>).value;
-        var newIndex = (newPosition as ValueKey<int>).value;
+        var oldIndex = _playerSigns.indexWhere((e) => e.key == draggedItem);
+        var newIndex = _playerSigns.indexWhere((e) => e.key == newPosition);
         final item = _playerSigns[oldIndex];
 
         setState(() {
+          item.currentIndex = newIndex;
           _playerSigns.removeAt(oldIndex);
           _playerSigns.insert(newIndex, item);
           print("Reoredering [$oldIndex] -> [$newIndex]");
@@ -396,7 +418,7 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
         return true;
       },
       child: ListView.builder(
-        itemBuilder: (context, index) => _buildPlayerItem(index),
+        itemBuilder: (context, index) => SingleDeviceGameSettingsPlayerListItemWidget(_playerSigns[index]),
         itemCount: _playerSigns.length,
       ),
     );
