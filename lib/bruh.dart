@@ -176,7 +176,7 @@ class TextItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget content = Container(
+    Widget content = Padding(padding: EdgeInsets.all(8), child: Container(
       margin: const EdgeInsets.symmetric(vertical: 5),
       padding: const EdgeInsets.all(20),
       alignment: Alignment.centerLeft,
@@ -184,7 +184,7 @@ class TextItem extends StatelessWidget {
       child: Text(
         "${data.data}",
       ),
-    );
+    ));
 
     return ReorderableItem(
       key: ValueKey(data.id),

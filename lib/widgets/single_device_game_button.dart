@@ -170,8 +170,8 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
                         padding: const EdgeInsets.all(5),
                         child: SingleDeviceGameSettingsPlayerList(
                           [
-                            PlayerSign(id: "0", color: Colors.red, name: "x", guiDelegate: SignGUIDelegates.x),
-                            PlayerSign(id: "1", color: Colors.blue, name: "o", guiDelegate: SignGUIDelegates.o),
+                            PlayerSign(id: "0", color: Colors.red, name: "x", guiDelegate: SignGUIDelegates().x),
+                            PlayerSign(id: "1", color: Colors.blue, name: "o", guiDelegate: SignGUIDelegates().o),
                           ],
                           key: _playerSignsListState,
                         ),
@@ -304,8 +304,7 @@ class SingleDeviceGameSettingsPlayerListItemWidget extends StatelessWidget {
 
   SingleDeviceGameSettingsPlayerListItemWidget(this.data);
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildChild(BuildContext context, ReorderableItemState state) {
     Widget content = SizedBox(
       height: 45,
       child: Row(
@@ -368,18 +367,20 @@ class SingleDeviceGameSettingsPlayerListItemWidget extends StatelessWidget {
       ),
     );
 
+    return Opacity(
+      opacity: state == ReorderableItemState.placeholder ? 0.1 : 1.0,
+      child: Padding(
+        padding: const EdgeInsets.all(5),
+        child: content,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) { // Maybe I'll remove this whole widget and move this in the list widget itself
     return ReorderableItem(
       key: data.key,
-      childBuilder: (context, state) {
-        content = Opacity(
-          opacity: state == ReorderableItemState.placeholder ? 0.1 : 1.0,
-          child: Padding(
-            padding: const EdgeInsets.all(5),
-            child: content,
-          ),
-        );
-        return content;
-      },
+      childBuilder: _buildChild,
     );
   }
 }

@@ -40,29 +40,37 @@ class DefaultStringSignGUIDelegate extends SignGUIDelegate {
 class SignGUIDelegates {
   SignGUIDelegates._();
 
-  static final SignGUIDelegate x = DefaultStringSignGUIDelegate("X");
+  factory SignGUIDelegates()
+  {
+    return _instance;
+  }
 
-  static final SignGUIDelegate o = DefaultStringSignGUIDelegate("O");
+  static final _instance = SignGUIDelegates._();
 
   static final values = List<SignGUIDelegate>();
-
-  /// Or "hashtag" or whatever it is, it's "#"
-  static final SignGUIDelegate sharp = _add(DefaultStringSignGUIDelegate("#"));
-
-  static final SignGUIDelegate y = _add(DefaultStringSignGUIDelegate("Y"));
-
-  static final SignGUIDelegate dollar = _add(DefaultStringSignGUIDelegate("\$"));
-
-  static final SignGUIDelegate g = _add(DefaultStringSignGUIDelegate("G"));
-
-  static final SignGUIDelegate at = _add(DefaultStringSignGUIDelegate("@"));
-
-  static final SignGUIDelegate exclamationMark = _add(DefaultStringSignGUIDelegate("!"));
 
   static SignGUIDelegate _add(SignGUIDelegate val) {
     values.add(val);
     return val;
   }
+  
+  final SignGUIDelegate x = _add(DefaultStringSignGUIDelegate("X"));
+
+  final SignGUIDelegate o = _add(DefaultStringSignGUIDelegate("O"));
+
+  /// Or "hashtag" or whatever it is, it's "#"
+  final SignGUIDelegate sharp = _add(DefaultStringSignGUIDelegate("#"));
+
+  final SignGUIDelegate y = _add(DefaultStringSignGUIDelegate("Y"));
+
+  final SignGUIDelegate dollar = _add(DefaultStringSignGUIDelegate("\$"));
+
+  final SignGUIDelegate g = _add(DefaultStringSignGUIDelegate("G"));
+
+  final SignGUIDelegate at = _add(DefaultStringSignGUIDelegate("@"));
+
+  final SignGUIDelegate exclamationMark = _add(DefaultStringSignGUIDelegate("!"));
+
 }
 
 class PlayerSign extends Equatable {
