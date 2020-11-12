@@ -478,45 +478,34 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
         });
         return true;
       },
-      child: CustomScrollView(
-        // TODO: Make be part of the "root" column
-        slivers: [
-          SliverList(
-            delegate: SliverChildListDelegate(
-              _playerSigns
-                  .map((e) => ReorderableItem(
-                        key: e.key,
-                        childBuilder: (context, state) => _buildChild(context, state, e),
-                      ))
-                  .toList(),
+      child: Column(
+        children: [
+          ..._playerSigns
+              .map((e) => ReorderableItem(
+                    key: e.key,
+                    childBuilder: (context, state) => _buildChild(context, state, e),
+                  ))
+              .toList(),
+          if (_playerSigns.length < 2) SizedBox(height: 12),
+          if (_playerSigns.length < 2)
+            Text(
+              "There must be at least 2 players to be able to start the game",
+              style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.red[300]),
+            ),
+          SizedBox(height: 12),
+          WhiteButton(
+            onPressed: _addPlayer,
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.add),
+                  Text(" ADD PLAYER"),
+                ],
+              ),
             ),
           ),
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                if (_playerSigns.length < 2) SizedBox(height: 12),
-                if (_playerSigns.length < 2)
-                  Text(
-                    "There must be at least 2 players to be able to start the game",
-                    style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.red[600]),
-                  ),
-                SizedBox(height: 12),
-                WhiteButton(
-                  onPressed: _addPlayer,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.add),
-                        Text(" ADD PLAYER"),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          )
         ],
       ),
     );
