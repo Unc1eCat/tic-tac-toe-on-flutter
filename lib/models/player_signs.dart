@@ -6,11 +6,13 @@ typedef SignWidgetBuilder = Widget Function(BuildContext context, Color color);
 
 // Represents GUI representation of a sign
 class SignGUIDelegate {
+  final String defaultName;
   final SignWidgetBuilder guiSmall; // That on the grid
   final SignWidgetBuilder guiMedium; // Usually in turn display
   final SignWidgetBuilder guiLarge; // Usually in win screen
 
   const SignGUIDelegate({
+    @required this.defaultName,
     @required this.guiSmall,
     @required this.guiLarge,
     @required this.guiMedium,
@@ -23,6 +25,7 @@ class SignGUIDelegate {
 class DefaultStringSignGUIDelegate extends SignGUIDelegate {
   DefaultStringSignGUIDelegate(String sign)
       : super(
+        defaultName: sign,
           guiSmall: (context, color) => Text(sign,
               style: TextStyle(
                 color: Colors.white,
@@ -38,15 +41,28 @@ class SignGUIDelegates {
   SignGUIDelegates._();
 
   static final SignGUIDelegate x = DefaultStringSignGUIDelegate("X");
+
   static final SignGUIDelegate o = DefaultStringSignGUIDelegate("O");
 
+  static final values = List<SignGUIDelegate>();
+
   /// Or "hashtag" or whatever it is, it's "#"
-  static final SignGUIDelegate sharp = DefaultStringSignGUIDelegate("#");
-  static final SignGUIDelegate y = DefaultStringSignGUIDelegate("Y");
-  static final SignGUIDelegate dollar = DefaultStringSignGUIDelegate("\$");
-  static final SignGUIDelegate g = DefaultStringSignGUIDelegate("G");
-  static final SignGUIDelegate at = DefaultStringSignGUIDelegate("@");
-  static final SignGUIDelegate exclamationMark = DefaultStringSignGUIDelegate("!");
+  static final SignGUIDelegate sharp = _add(DefaultStringSignGUIDelegate("#"));
+
+  static final SignGUIDelegate y = _add(DefaultStringSignGUIDelegate("Y"));
+
+  static final SignGUIDelegate dollar = _add(DefaultStringSignGUIDelegate("\$"));
+
+  static final SignGUIDelegate g = _add(DefaultStringSignGUIDelegate("G"));
+
+  static final SignGUIDelegate at = _add(DefaultStringSignGUIDelegate("@"));
+
+  static final SignGUIDelegate exclamationMark = _add(DefaultStringSignGUIDelegate("!"));
+
+  static SignGUIDelegate _add(SignGUIDelegate val) {
+    values.add(val);
+    return val;
+  }
 }
 
 class PlayerSign extends Equatable {

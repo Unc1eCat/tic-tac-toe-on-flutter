@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
 import 'package:my_utilities/color_utils.dart';
 import 'package:provider/provider.dart';
+import 'package:random_color/random_color.dart';
 import 'package:tic_tac_toe/models/player_signs.dart';
 import 'package:tic_tac_toe/models/sd_game_args.dart';
 import 'package:tic_tac_toe/screens/game_screen.dart';
@@ -80,6 +81,7 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
   @override
   Widget build(BuildContext context) {
     _form = GlobalKey<FormState>();
+    _playerSignsListState = GlobalKey<_SingleDeviceGameSettingsPlayerListState>();
     var content = expanded
         ? Form(
             key: _form,
@@ -286,11 +288,15 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
 }
 
 class SingleDeviceGameSettingsPlayerListItem {
-  int currentIndex;
+  // int currentIndex;
   ValueKey<int> key; // Maybe I will replace it with the id of the player sign.
   PlayerSign value;
 
-  SingleDeviceGameSettingsPlayerListItem(this.key, this.value, this.currentIndex);
+  SingleDeviceGameSettingsPlayerListItem(
+    this.key,
+    this.value,
+    /*this.currentIndex*/
+  );
 }
 
 class SingleDeviceGameSettingsPlayerListItemWidget extends StatelessWidget {
@@ -379,6 +385,7 @@ class SingleDeviceGameSettingsPlayerListItemWidget extends StatelessWidget {
 }
 
 class SingleDeviceGameSettingsPlayerList extends StatefulWidget {
+  /// Set [_playerSigns] to null or don't change them to keep old state
   final List<PlayerSign> _playerSigns;
 
   const SingleDeviceGameSettingsPlayerList(
@@ -392,19 +399,71 @@ class SingleDeviceGameSettingsPlayerList extends StatefulWidget {
 
 class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSettingsPlayerList> {
   List<SingleDeviceGameSettingsPlayerListItem> _playerSigns = [];
+  static var lastId = 0;
 
   List<SingleDeviceGameSettingsPlayerListItem> get playerSigns => List.unmodifiable(_playerSigns);
 
   @override
-  void didChangeDependencies() {
-    for (var i = 0; i < widget._playerSigns.length; i++) {
-      _playerSigns.add(SingleDeviceGameSettingsPlayerListItem(ValueKey(i), widget._playerSigns[i], i));
+  void initState() {
+    if (widget._playerSigns != null) {
+      for (var i = 0; i < widget._playerSigns.length; i++) {
+        _playerSigns.add(SingleDeviceGameSettingsPlayerListItem(
+          ValueKey(i),
+          widget._playerSigns[i], /*i*/
+        ));
+      }
     }
-    super.didChangeDependencies();
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant SingleDeviceGameSettingsPlayerList oldWidget) {
+    if (oldWidget._playerSigns == widget._playerSigns || widget._playerSigns == null) return;
+
+    for (var i = 0; i < widget._playerSigns.length; i++) {
+      _playerSigns.add(SingleDeviceGameSettingsPlayerListItem(
+        ValueKey(i),
+        widget._playerSigns[i], /*i*/
+      ));
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  void _addPlayer() {
+    print(SignGUIDelegates.values);
+    PlayerSign newPlayer = PlayerSign(
+      color: RandomColor().randomColor(), // TODO: Make it automatically choose the most contrast color to colors of the existing players
+      id: String.fromCharCode(lastId++), // Pray it doesn't reach the integer limit
+      guiDelegate: SignGUIDelegates.values[_playerSigns.length],
+      name: SignGUIDelegates.values[_playerSigns.length].defaultName,
+    );
+
+    setState(
+      () => _playerSigns.add(
+        SingleDeviceGameSettingsPlayerListItem(
+          ValueKey(_playerSigns.length),
+          newPlayer, /*_playerSigns.length*/
+        ),
+      ),
+    );
+  }
+
+  void _removePlayer(ValueKey<int> key) {
+    var removedIndex = _playerSigns.indexWhere((e) => e.key == key);
+
+    setState(() {
+      _playerSigns.removeAt(removedIndex);
+
+      // for (var i = removedIndex; i < _playerSigns.length; i++)
+      // {
+      //   _playerSigns[i].currentIndex = i;
+      // }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    // print(_playerSigns);
     return Column(
       children: [
         SizedBox(
@@ -416,14 +475,15 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
               final item = _playerSigns[oldIndex];
 
               setState(() {
-                item.currentIndex = newIndex;
+                // item.currentIndex = newIndex;
                 _playerSigns.removeAt(oldIndex);
                 _playerSigns.insert(newIndex, item);
                 print("Reoredering [$oldIndex] -> [$newIndex]");
               });
               return true;
             },
-            child: ListView.builder( // TODO: Make be part of the "root" column
+            child: ListView.builder(
+              // TODO: Make be part of the "root" column
               itemBuilder: (context, index) => SingleDeviceGameSettingsPlayerListItemWidget(_playerSigns[index]),
               itemCount: _playerSigns.length,
             ),
@@ -431,6 +491,7 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
         ),
         SizedBox(height: 16),
         WhiteButton(
+          onPressed: _addPlayer,
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: Row(
