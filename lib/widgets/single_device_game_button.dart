@@ -288,101 +288,13 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
 }
 
 class SingleDeviceGameSettingsPlayerListItem {
-  // int currentIndex;
   ValueKey<int> key; // Maybe I will replace it with the id of the player sign.
   PlayerSign value;
 
   SingleDeviceGameSettingsPlayerListItem(
     this.key,
     this.value,
-    /*this.currentIndex*/
   );
-}
-
-class SingleDeviceGameSettingsPlayerListItemWidget extends StatelessWidget {
-  final SingleDeviceGameSettingsPlayerListItem data;
-
-  SingleDeviceGameSettingsPlayerListItemWidget(this.data);
-
-  Widget _buildChild(BuildContext context, ReorderableItemState state) {
-    Widget content = SizedBox(
-      height: 45,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        // crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            child: _wrapInCard(
-              TextField(
-                // TODO: Make the name have max lenght
-                cursorRadius: Radius.circular(2.5),
-                enableSuggestions: true,
-                keyboardType: TextInputType.name,
-                onChanged: (newValue) => data.value = data.value.copyWith(name: newValue),
-                textAlign: TextAlign.center,
-                textAlignVertical: TextAlignVertical.center,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: "Player name",
-                ),
-                cursorColor: Colors.white54,
-                controller: TextEditingController(text: data.value.name),
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              margin: EdgeInsets.zero,
-            ),
-          ),
-          SizedBox(width: 12),
-          // FormField<SignGUIDelegate>(
-          //   initialValue: data.value.guiDelegate,
-          //   onSaved: (newValue) => data.value = data.value.copyWith(guiDelegate: newValue),
-          //   builder: (field) => WhiteButton(
-          //     child: Padding(
-          //       padding: const EdgeInsets.all(8),
-          //       child: field.value.guiSmall(context, Colors.white),
-          //     ),
-          //   ),
-          // ),
-          WhiteButton(
-            onPressed: () {/* Open sign selector */},
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: data.value.guiDelegate.guiSmall(context, Colors.white),
-            ),
-          ),
-          SizedBox(width: 16),
-          ColorInput(
-            initialValue: data.value.color,
-            onChanged: (newValue) => data.value = data.value.copyWith(color: newValue),
-          ),
-          SizedBox(width: 10),
-          DelayedReorderableListener(
-            delay: Duration(milliseconds: 460),
-            child: Icon(
-              Icons.drag_indicator_rounded,
-            ),
-          ),
-        ],
-      ),
-    );
-
-    return Opacity(
-      opacity: state == ReorderableItemState.placeholder ? 0.1 : 1.0,
-      child: Padding(
-        padding: const EdgeInsets.all(5),
-        child: content,
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) { // Maybe I'll remove this whole widget and move this in the list widget itself
-    return ReorderableItem(
-      key: data.key,
-      childBuilder: _buildChild,
-    );
-  }
 }
 
 class SingleDeviceGameSettingsPlayerList extends StatefulWidget {
@@ -421,13 +333,17 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
   void didUpdateWidget(covariant SingleDeviceGameSettingsPlayerList oldWidget) {
     if (oldWidget._playerSigns == widget._playerSigns || widget._playerSigns == null) return;
 
+    _applyInitialPlayerSigns();
+    super.didUpdateWidget(oldWidget);
+  }
+
+  void _applyInitialPlayerSigns() {
     for (var i = 0; i < widget._playerSigns.length; i++) {
       _playerSigns.add(SingleDeviceGameSettingsPlayerListItem(
         ValueKey(i),
         widget._playerSigns[i], /*i*/
       ));
     }
-    super.didUpdateWidget(oldWidget);
   }
 
   void _addPlayer() {
@@ -454,57 +370,155 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
 
     setState(() {
       _playerSigns.removeAt(removedIndex);
-
-      // for (var i = removedIndex; i < _playerSigns.length; i++)
-      // {
-      //   _playerSigns[i].currentIndex = i;
-      // }
     });
+  }
+
+  Widget _buildChild(BuildContext context, ReorderableItemState state, SingleDeviceGameSettingsPlayerListItem data) {
+    Widget content = Dismissible(
+      direction: DismissDirection.endToStart,
+      background: Card(
+        color: Colors.red[300],
+        shadowColor: Colors.redAccent[700],
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: Icon(Icons.delete),
+          ),
+        ),
+      ),
+      onDismissed: (direction) => _removePlayer(data.key),
+      key: data.key,
+      child: SizedBox(
+        height: 45,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: _wrapInCard(
+                TextField(
+                  // TODO: Make the name have max lenght
+                  cursorRadius: Radius.circular(2.5),
+                  enableSuggestions: true,
+                  keyboardType: TextInputType.name,
+                  onChanged: (newValue) => data.value = data.value.copyWith(name: newValue),
+                  textAlign: TextAlign.center,
+                  textAlignVertical: TextAlignVertical.center,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "Player name",
+                  ),
+                  cursorColor: Colors.white54,
+                  controller: TextEditingController(text: data.value.name),
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+                margin: EdgeInsets.zero,
+              ),
+            ),
+            SizedBox(width: 12),
+            // FormField<SignGUIDelegate>(
+            //   initialValue: data.value.guiDelegate,
+            //   onSaved: (newValue) => data.value = data.value.copyWith(guiDelegate: newValue),
+            //   builder: (field) => WhiteButton(
+            //     child: Padding(
+            //       padding: const EdgeInsets.all(8),
+            //       child: field.value.guiSmall(context, Colors.white),
+            //     ),
+            //   ),
+            // ),
+            WhiteButton(
+              onPressed: () {/* Open sign selector */},
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: data.value.guiDelegate.guiSmall(context, Colors.white),
+              ),
+            ),
+            SizedBox(width: 16),
+            ColorInput(
+              initialValue: data.value.color,
+              onChanged: (newValue) => data.value = data.value.copyWith(color: newValue),
+            ),
+            SizedBox(width: 10),
+            DelayedReorderableListener(
+              delay: Duration(milliseconds: 460),
+              child: Icon(
+                Icons.drag_indicator_rounded,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    return Opacity(
+      opacity: state == ReorderableItemState.placeholder ? 0.0 : 1.0,
+      child: Padding(
+        padding: const EdgeInsets.all(5),
+        child: content,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     // print(_playerSigns);
-    return Column(
-      children: [
-        SizedBox(
-          height: 300,
-          child: ReorderableList(
-            onReorder: (draggedItem, newPosition) {
-              var oldIndex = _playerSigns.indexWhere((e) => e.key == draggedItem);
-              var newIndex = _playerSigns.indexWhere((e) => e.key == newPosition);
-              final item = _playerSigns[oldIndex];
+    return ReorderableList(
+      onReorder: (draggedItem, newPosition) {
+        var oldIndex = _playerSigns.indexWhere((e) => e.key == draggedItem);
+        var newIndex = _playerSigns.indexWhere((e) => e.key == newPosition);
+        final item = _playerSigns[oldIndex];
 
-              setState(() {
-                // item.currentIndex = newIndex;
-                _playerSigns.removeAt(oldIndex);
-                _playerSigns.insert(newIndex, item);
-                print("Reoredering [$oldIndex] -> [$newIndex]");
-              });
-              return true;
-            },
-            child: ListView.builder(
-              // TODO: Make be part of the "root" column
-              itemBuilder: (context, index) => SingleDeviceGameSettingsPlayerListItemWidget(_playerSigns[index]),
-              itemCount: _playerSigns.length,
+        setState(() {
+          // item.currentIndex = newIndex;
+          _playerSigns.removeAt(oldIndex);
+          _playerSigns.insert(newIndex, item);
+          print("Reoredering [$oldIndex] -> [$newIndex]");
+        });
+        return true;
+      },
+      child: CustomScrollView(
+        // TODO: Make be part of the "root" column
+        slivers: [
+          SliverList(
+            delegate: SliverChildListDelegate(
+              _playerSigns
+                  .map((e) => ReorderableItem(
+                        key: e.key,
+                        childBuilder: (context, state) => _buildChild(context, state, e),
+                      ))
+                  .toList(),
             ),
           ),
-        ),
-        SizedBox(height: 16),
-        WhiteButton(
-          onPressed: _addPlayer,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.add),
-                Text(" ADD PLAYER"),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                if (_playerSigns.length < 2) SizedBox(height: 12),
+                if (_playerSigns.length < 2)
+                  Text(
+                    "There must be at least 2 players to be able to start the game",
+                    style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.red[600]),
+                  ),
+                SizedBox(height: 12),
+                WhiteButton(
+                  onPressed: _addPlayer,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.add),
+                        Text(" ADD PLAYER"),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
-          ),
-        ),
-      ],
+          )
+        ],
+      ),
     );
   }
 }
