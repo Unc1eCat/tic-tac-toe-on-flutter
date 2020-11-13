@@ -49,28 +49,6 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
   var expanded = false;
   var args = SingleDeviceGameArguments();
 
-  // Widget _buildButton(Widget child, VoidCallback onPressed) {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //       border: Border.all(
-  //         color: Colors.white12,
-  //         width: 1.2,
-  //       ),
-  //       color: Colors.white10,
-  //       borderRadius: BorderRadius.circular(8),
-  //     ),
-  //     child: Material(
-  //       color: Colors.transparent,
-  //       child: InkWell(
-  //         borderRadius: BorderRadius.circular(8),
-  //         highlightColor: Colors.transparent,
-  //         child: Center(child: child),
-  //         onTap: onPressed,
-  //       ),
-  //     ),
-  //   );
-  // }
-
   void _play() async {
     _form.currentState.save();
     args.players = _playerSignsListState.currentState.playerSigns.map((e) => e.value).toList();
@@ -172,6 +150,16 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
                           [
                             PlayerSign(id: "0", color: Colors.red, name: "x", guiDelegate: SignGUIDelegates().x),
                             PlayerSign(id: "1", color: Colors.blue, name: "o", guiDelegate: SignGUIDelegates().o),
+                          ],
+                          availableColors: [
+                            Colors.red,
+                            Colors.purple,
+                            Colors.blue,
+                            Colors.amber,
+                            Colors.green,
+                            Colors.indigo,
+                            Colors.pink,
+                            Colors.deepOrange,
                           ],
                           key: _playerSignsListState,
                         ),
@@ -300,10 +288,12 @@ class SingleDeviceGameSettingsPlayerListItem {
 class SingleDeviceGameSettingsPlayerList extends StatefulWidget {
   /// Set [_playerSigns] to null or don't change them to keep old state
   final List<PlayerSign> _playerSigns;
+  final List<Color> availableColors;
 
   const SingleDeviceGameSettingsPlayerList(
     this._playerSigns, {
     Key key,
+    @required this.availableColors,
   }) : super(key: key);
 
   @override
@@ -464,49 +454,52 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
   @override
   Widget build(BuildContext context) {
     // print(_playerSigns);
-    return ReorderableList(
-      onReorder: (draggedItem, newPosition) {
-        var oldIndex = _playerSigns.indexWhere((e) => e.key == draggedItem);
-        var newIndex = _playerSigns.indexWhere((e) => e.key == newPosition);
-        final item = _playerSigns[oldIndex];
+    return Provider<List<SingleDeviceGameSettingsPlayerListItem>>(
+      create: (context) => _playerSigns,
+      child: ReorderableList(
+        onReorder: (draggedItem, newPosition) {
+          var oldIndex = _playerSigns.indexWhere((e) => e.key == draggedItem);
+          var newIndex = _playerSigns.indexWhere((e) => e.key == newPosition);
+          final item = _playerSigns[oldIndex];
 
-        setState(() {
-          // item.currentIndex = newIndex;
-          _playerSigns.removeAt(oldIndex);
-          _playerSigns.insert(newIndex, item);
-          print("Reoredering [$oldIndex] -> [$newIndex]");
-        });
-        return true;
-      },
-      child: Column(
-        children: [
-          ..._playerSigns
-              .map((e) => ReorderableItem(
-                    key: e.key,
-                    childBuilder: (context, state) => _buildChild(context, state, e),
-                  ))
-              .toList(),
-          if (_playerSigns.length < 2) SizedBox(height: 12),
-          if (_playerSigns.length < 2)
-            Text(
-              "There must be at least 2 players to be able to start the game",
-              style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.red[300]),
-            ),
-          SizedBox(height: 12),
-          WhiteButton(
-            onPressed: _addPlayer,
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.add),
-                  Text(" ADD PLAYER"),
-                ],
+          setState(() {
+            // item.currentIndex = newIndex;
+            _playerSigns.removeAt(oldIndex);
+            _playerSigns.insert(newIndex, item);
+            print("Reoredering [$oldIndex] -> [$newIndex]");
+          });
+          return true;
+        },
+        child: Column(
+          children: [
+            ..._playerSigns
+                .map((e) => ReorderableItem(
+                      key: e.key,
+                      childBuilder: (context, state) => _buildChild(context, state, e),
+                    ))
+                .toList(),
+            if (_playerSigns.length < 2) SizedBox(height: 12),
+            if (_playerSigns.length < 2)
+              Text(
+                "There must be at least 2 players to be able to start the game",
+                style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.red[300]),
+              ),
+            SizedBox(height: 12),
+            WhiteButton(
+              onPressed: _addPlayer,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.add),
+                    Text(" ADD PLAYER"),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

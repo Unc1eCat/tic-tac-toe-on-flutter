@@ -74,7 +74,7 @@ class SignGUIDelegates {
 }
 
 class PlayerSign extends Equatable {
-  final String id;
+  final Key id;
   final SignGUIDelegate guiDelegate;
   final Color color;
   final String name;
