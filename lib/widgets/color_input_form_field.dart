@@ -1,45 +1,37 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tic_tac_toe/bloc/single_device_game_lobby_player_list_cubit.dart';
+import 'package:tic_tac_toe/models/player_signs.dart';
 import 'package:tic_tac_toe/widgets/white_button.dart';
 import 'package:my_utilities/color_utils.dart';
 import 'animated_in_out.dart';
 
 typedef void OnColorCangedCallback(Color newValue, ValueKey<int> changedPlayer);
 
-class ColorOptionData {
-  Color color;
+// class ColorOptionData {
+//   Color color;
 
-  /// Null if the option is free
-  ValueKey<int> occupierKey;
+//   /// Null if the option is free
+//   ValueKey<int> occupierKey;
 
-  ColorOptionData(this.color, this.occupierKey);
-}
+//   ColorOptionData(this.color, this.occupierKey);
+// }
 
-class ColorInput extends StatefulWidget {
+class ColorInput extends StatelessWidget {
   final OnColorCangedCallback onChanged;
-  final List<ColorOptionData> colorData;
-  final ValueKey<int> thisSign;
+  final int thisIndex;
 
   const ColorInput({
     Key key,
     this.onChanged,
-    @required this.colorData,
-    @required this.thisSign,
+    @required this.thisIndex,
   }) : super(key: key);
 
-  @override
-  _ColorInputState createState() => _ColorInputState();
-}
-
-class _ColorInputState extends State<ColorInput> {
-  ColorOptionData get colorData => widget.colorData.where((e) => e.occupierKey == widget.thisSign).first;
-
-  void _changeColor(Color newColor, ValueKey<int> changedPlayer) {
-    widget.onChanged(newColor, widget.thisSign);
-  }
-
-  void _openColorPicker() {
+  void _openColorPicker(BuildContext context) {
+    var cubit = BlocProvider.of<SingleDeviceGameLobbyPLayerListCubit>(context);
+    var thisPlayerSign = cubit.playerAt(thisIndex);
     var screenHeight = MediaQuery.of(context).size.height - MediaQuery.of(context).padding.vertical;
     var screenWidth = MediaQuery.of(context).size.width - MediaQuery.of(context).padding.horizontal;
     RenderBox rb = context.findRenderObject();
@@ -103,11 +95,11 @@ class _ColorInputState extends State<ColorInput> {
                     padding: const EdgeInsets.all(8),
                     maxCrossAxisExtent: 70,
                     children: [
-                      ...widget.colorData
+                      ...cubit.allColors
                           .map((e) => ColorOption(
-                                color: e.color,
-                                isOccupied: colorData.occupierKey != widget.thisSign,
-                                isSelected: colorData.occupierKey == widget.thisSign,
+                                color: e,
+                                isOccupied: _isColorOccupied(e, cubit.playersList),
+                                isSelected: thisPlayerSign.color == e,
                               ))
                           .toList(),
                     ],
@@ -121,6 +113,15 @@ class _ColorInputState extends State<ColorInput> {
     );
     Overlay.of(context).insert(entry);
   } // TODO: Move the "custom popup menu button in a separate widget"!!!!!
+  
+  bool _isColorOccupied(Color color, List<PlayerSign> players)
+  { 
+    var ret = false;
+
+    players.forEach((e) => e.color == color);
+
+    return ret;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,9 +129,9 @@ class _ColorInputState extends State<ColorInput> {
       constraints: BoxConstraints(minHeight: 30, minWidth: 60),
       child: WhiteButton(
         alignment: Alignment.centerRight,
-        onPressed: _openColorPicker,
-        bodyColor: colorData.color.withOpacity(0.6),
-        borderColor: colorData.color,
+        onPressed: () => _openColorPicker(context),
+        bodyColor: BlocProvider.of<SingleDeviceGameLobbyPLayerListCubit>(context).playerAt(thisIndex).color.withOpacity(0.6),
+        borderColor: BlocProvider.of<SingleDeviceGameLobbyPLayerListCubit>(context).playerAt(thisIndex).color,
         child: Padding(
           padding: const EdgeInsets.only(right: 8),
           child: Icon(Icons.color_lens),

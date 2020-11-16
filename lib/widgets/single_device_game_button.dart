@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
 import 'package:my_utilities/color_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:random_color/random_color.dart';
+import 'package:tic_tac_toe/bloc/single_device_game_lobby_player_list_cubit.dart';
 import 'package:tic_tac_toe/models/player_signs.dart';
 import 'package:tic_tac_toe/models/sd_game_args.dart';
 import 'package:tic_tac_toe/screens/game_screen.dart';
@@ -51,8 +53,7 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
 
   void _play() async {
     _form.currentState.save();
-    args.players = _playerSignsListState.currentState.playerSigns.map((e) => e.value).toList();
-    // print(args.players);
+    args.players = _playerSignsListState.currentState.playerSigns.toList();
     Navigator.pushReplacementNamed(context, GameScreen.ROUTE_NAME, arguments: args);
   }
 
@@ -148,8 +149,8 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
                         padding: const EdgeInsets.all(5),
                         child: SingleDeviceGameSettingsPlayerList(
                           [
-                            PlayerSign(id: "0", color: Colors.red, name: "x", guiDelegate: SignGUIDelegates().x),
-                            PlayerSign(id: "1", color: Colors.blue, name: "o", guiDelegate: SignGUIDelegates().o),
+                            PlayerSign(id: ValueKey<int>(0), color: Colors.red, name: "x", guiDelegate: SignGUIDelegates().x),
+                            PlayerSign(id: ValueKey<int>(0), color: Colors.blue, name: "o", guiDelegate: SignGUIDelegates().o),
                           ],
                           availableColors: [
                             Colors.red,
@@ -275,15 +276,15 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
   }
 }
 
-class SingleDeviceGameSettingsPlayerListItem {
-  ValueKey<int> key; // Maybe I will replace it with the id of the player sign.
-  PlayerSign value;
+// class SingleDeviceGameSettingsPlayerListItem {
+//   ValueKey<int> key; // Maybe I will replace it with the id of the player sign.
+//   PlayerSign value;
 
-  SingleDeviceGameSettingsPlayerListItem(
-    this.key,
-    this.value,
-  );
-}
+//   SingleDeviceGameSettingsPlayerListItem(
+//     this.key,
+//     this.value,
+//   );
+// }
 
 class SingleDeviceGameSettingsPlayerList extends StatefulWidget {
   /// Set [_playerSigns] to null or don't change them to keep old state
@@ -301,20 +302,14 @@ class SingleDeviceGameSettingsPlayerList extends StatefulWidget {
 }
 
 class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSettingsPlayerList> {
-  List<SingleDeviceGameSettingsPlayerListItem> _playerSigns = [];
-  static var lastId = 0;
+  SingleDeviceGameLobbyPLayerListCubit _playerListCubit;
 
-  List<SingleDeviceGameSettingsPlayerListItem> get playerSigns => List.unmodifiable(_playerSigns);
+  List<PlayerSign> get playerSigns => List.unmodifiable(_playerListCubit.playersList);
 
   @override
   void initState() {
     if (widget._playerSigns != null) {
-      for (var i = 0; i < widget._playerSigns.length; i++) {
-        _playerSigns.add(SingleDeviceGameSettingsPlayerListItem(
-          ValueKey(i),
-          widget._playerSigns[i], /*i*/
-        ));
-      }
+      _applyInitialPlayerSigns();
     }
     super.initState();
   }
@@ -328,42 +323,16 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
   }
 
   void _applyInitialPlayerSigns() {
-    for (var i = 0; i < widget._playerSigns.length; i++) {
-      _playerSigns.add(SingleDeviceGameSettingsPlayerListItem(
-        ValueKey(i),
-        widget._playerSigns[i], /*i*/
-      ));
-    }
-  }
-
-  void _addPlayer() {
-    print(SignGUIDelegates.values);
-    PlayerSign newPlayer = PlayerSign(
-      color: RandomColor().randomColor(), // TODO: Make it automatically choose the most contrast color to colors of the existing players
-      id: String.fromCharCode(lastId++), // Pray it doesn't reach the integer limit
-      guiDelegate: SignGUIDelegates.values[_playerSigns.length],
-      name: SignGUIDelegates.values[_playerSigns.length].defaultName,
-    );
-
     setState(
-      () => _playerSigns.add(
-        SingleDeviceGameSettingsPlayerListItem(
-          ValueKey(_playerSigns.length),
-          newPlayer, /*_playerSigns.length*/
-        ),
+      () => _playerListCubit = SingleDeviceGameLobbyPLayerListCubit(
+        playersList: widget._playerSigns,
+        allColors: widget.availableColors,
+        allDelegates: SignGUIDelegates.values,
       ),
     );
   }
 
-  void _removePlayer(ValueKey<int> key) {
-    var removedIndex = _playerSigns.indexWhere((e) => e.key == key);
-
-    setState(() {
-      _playerSigns.removeAt(removedIndex);
-    });
-  }
-
-  Widget _buildChild(BuildContext context, ReorderableItemState state, SingleDeviceGameSettingsPlayerListItem data) {
+  Widget _buildChild(BuildContext context, ReorderableItemState state, int index) {
     Widget content = Dismissible(
       direction: DismissDirection.endToStart,
       background: Card(
@@ -377,8 +346,8 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
           ),
         ),
       ),
-      onDismissed: (direction) => _removePlayer(data.key),
-      key: data.key,
+      onDismissed: (direction) => _playerListCubit.removePlayer(index),
+      key: _playerListCubit.playerAt(index).id,
       child: SizedBox(
         height: 45,
         child: Row(
@@ -388,22 +357,26 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
           children: [
             Flexible(
               child: _wrapInCard(
-                TextField(
-                  // TODO: Make the name have max lenght
-                  cursorRadius: Radius.circular(2.5),
-                  enableSuggestions: true,
-                  keyboardType: TextInputType.name,
-                  onChanged: (newValue) => data.value = data.value.copyWith(name: newValue),
-                  textAlign: TextAlign.center,
-                  textAlignVertical: TextAlignVertical.center,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "Player name",
-                  ),
-                  cursorColor: Colors.white54,
-                  controller: TextEditingController(text: data.value.name),
-                  style: Theme.of(context).textTheme.headline6,
-                ),
+                BlocBuilder<SingleDeviceGameLobbyPLayerListCubit, SingleDeviceGameLobbyPLayerListState>(
+                    buildWhen: (previous, current) => current is PlayerNameChangedSingleDeviceGameLobbyState,
+                    builder: (context, state) {
+                      return TextField(
+                        // TODO: Make the name have max lenght
+                        cursorRadius: Radius.circular(2.5),
+                        enableSuggestions: true,
+                        keyboardType: TextInputType.name,
+                        onChanged: (newValue) => _playerListCubit.changePlayerName(newValue, index),
+                        textAlign: TextAlign.center,
+                        textAlignVertical: TextAlignVertical.center,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "Player name",
+                        ),
+                        cursorColor: Colors.white54,
+                        controller: TextEditingController(text: _playerListCubit.playerAt(index).name),
+                        style: Theme.of(context).textTheme.headline6,
+                      );
+                    }),
                 margin: EdgeInsets.zero,
               ),
             ),
@@ -422,13 +395,12 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
               onPressed: () {/* Open sign selector */},
               child: Padding(
                 padding: const EdgeInsets.all(8),
-                child: data.value.guiDelegate.guiSmall(context, Colors.white),
+                child: _playerListCubit.playersList[index].guiDelegate.guiSmall(context, Colors.white),
               ),
             ),
             SizedBox(width: 16),
             ColorInput(
-              initialValue: data.value.color,
-              onChanged: (newValue) => data.value = data.value.copyWith(color: newValue),
+              thisIndex: index,
             ),
             SizedBox(width: 10),
             DelayedReorderableListener(
@@ -454,52 +426,51 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
   @override
   Widget build(BuildContext context) {
     // print(_playerSigns);
-    return Provider<List<SingleDeviceGameSettingsPlayerListItem>>(
-      create: (context) => _playerSigns,
+    return BlocProvider<SingleDeviceGameLobbyPLayerListCubit>(
+      create: (context) => _playerListCubit,
       child: ReorderableList(
         onReorder: (draggedItem, newPosition) {
-          var oldIndex = _playerSigns.indexWhere((e) => e.key == draggedItem);
-          var newIndex = _playerSigns.indexWhere((e) => e.key == newPosition);
-          final item = _playerSigns[oldIndex];
-
-          setState(() {
-            // item.currentIndex = newIndex;
-            _playerSigns.removeAt(oldIndex);
-            _playerSigns.insert(newIndex, item);
-            print("Reoredering [$oldIndex] -> [$newIndex]");
-          });
+          _playerListCubit.reorder(draggedItem, newPosition);
           return true;
         },
-        child: Column(
-          children: [
-            ..._playerSigns
-                .map((e) => ReorderableItem(
-                      key: e.key,
-                      childBuilder: (context, state) => _buildChild(context, state, e),
-                    ))
-                .toList(),
-            if (_playerSigns.length < 2) SizedBox(height: 12),
-            if (_playerSigns.length < 2)
-              Text(
-                "There must be at least 2 players to be able to start the game",
-                style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.red[300]),
-              ),
-            SizedBox(height: 12),
-            WhiteButton(
-              onPressed: _addPlayer,
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.add),
-                    Text(" ADD PLAYER"),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+        child: BlocBuilder<SingleDeviceGameLobbyPLayerListCubit, SingleDeviceGameLobbyPLayerListState>(
+            buildWhen: (previous, current) =>
+                current is RemovePlayerSingleDeviceGameLobbyPLayerListState ||
+                current is AddedPlayerSingleDeviceGameLobbyPLayerListState ||
+                current is ReorderedPlayersSingleDeviceGameLobbyPLayerListState,
+            builder: (context, state) {
+              return Column(
+                children: [
+                  ..._playerListCubit.playersList
+                      .map((e) => ReorderableItem(
+                            key: e.id,
+                            childBuilder: (context, state) =>
+                                _buildChild(context, state, _playerListCubit.indexOfId(e.id)), // Optimize index
+                          ))
+                      .toList(),
+                  if (_playerListCubit.playersList.length < 2) SizedBox(height: 12),
+                  if (_playerListCubit.playersList.length < 2)
+                    Text(
+                      "There must be at least 2 players to be able to start the game",
+                      style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.red[300]),
+                    ),
+                  SizedBox(height: 12),
+                  WhiteButton(
+                    onPressed: _playerListCubit.constructAndAddPlayer,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.add),
+                          Text(" ADD PLAYER"),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }),
       ),
     );
   }
