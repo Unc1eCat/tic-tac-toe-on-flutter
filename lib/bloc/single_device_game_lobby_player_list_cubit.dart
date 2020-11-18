@@ -5,6 +5,8 @@ import 'package:random_color/random_color.dart';
 import 'package:tic_tac_toe/models/player_signs.dart';
 import 'package:tic_tac_toe/models/sd_game_args.dart';
 
+typedef Future<bool> OnConflictCallback(int occupier);
+
 class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPLayerListState> {
   static var _lastId = 0;
 
@@ -27,6 +29,15 @@ class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPL
 
   List<SignGUIDelegate> _allDelegates;
 
+  /// Returns -1 if it's not occupied
+  int isColorOccupied(Color color) {
+    return _playersList.indexWhere((e) => e.color == color);
+  }
+
+  Color uncoccupiedColor() {
+    return _allColors.firstWhere((c) => _playersList.every((p) => p.color != c));
+  }
+
   PlayerSign playerOfId(Key id) {
     return _playersList.firstWhere(((e) => e.id == id));
   }
@@ -39,9 +50,19 @@ class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPL
     return _playersList.indexWhere((e) => e.id == id);
   }
 
-  void changeColor(Color color, int index) {
-    _playersList[index] = _playersList[index].copyWith(color: color);
-    emit(PlayerColorChangedSingleDeviceGameLobbyState(index, color));
+  Future<void> changeColor(Color color, int index, OnConflictCallback onConflict) async {
+    var occupier = isColorOccupied(color);
+
+    if (occupier == index) return;
+
+    if (occupier == -1) {
+      _playersList[index] = _playersList[index].copyWith(color: color);
+      emit(PlayerColorChangedSingleDeviceGameLobbyState(index, color));
+    } else if (await onConflict(occupier) ?? false) {
+      _playersList[occupier] = _playersList[occupier].copyWith(color: _playersList[index].color);
+      _playersList[index] = _playersList[index].copyWith(color: color);
+      emit(PlayerColorChangedSingleDeviceGameLobbyState(index, color));
+    }
   }
 
   void changeSignGUIDeleagte(SignGUIDelegate signGUIDelegate, int index) {
@@ -61,12 +82,12 @@ class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPL
 
   void constructAndAddPlayer() {
     var newPlayer = PlayerSign(
-      color: RandomColor().randomColor(), // TODO: Make it automatically choose the most contrast color to colors of the existing players
+      color: uncoccupiedColor(), // TODO: Make it automatically choose the most contrast color to colors of the existing players
       id: ValueKey(_lastId++), // Pray it doesn't reach the integer limit
       guiDelegate: SignGUIDelegates.values[_playersList.length],
       name: SignGUIDelegates.values[_playersList.length].defaultName,
     );
-    _playersList.add(newPlayer);
+    addPlayer(newPlayer);
   }
 
   void removePlayer(int index) {
@@ -82,6 +103,7 @@ class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPL
     _playersList.removeAt(oldIndex);
     _playersList.insert(newIndex, item);
     print("Reoredering [$oldIndex] -> [$newIndex]");
+    emit(ReorderedPlayersSingleDeviceGameLobbyPLayerListState(oldIndex));
   }
 }
 
@@ -123,7 +145,6 @@ class RemovePlayerSingleDeviceGameLobbyPLayerListState extends PlayerChangedSing
   RemovePlayerSingleDeviceGameLobbyPLayerListState(int playerIndex) : super(playerIndex);
 }
 
-class ReorderedPlayersSingleDeviceGameLobbyPLayerListState extends PlayerChangedSingleDeviceGameLobbyState
-{
+class ReorderedPlayersSingleDeviceGameLobbyPLayerListState extends PlayerChangedSingleDeviceGameLobbyState {
   ReorderedPlayersSingleDeviceGameLobbyPLayerListState(int playerIndex) : super(playerIndex);
 }

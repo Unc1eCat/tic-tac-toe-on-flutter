@@ -150,7 +150,7 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
                         child: SingleDeviceGameSettingsPlayerList(
                           [
                             PlayerSign(id: ValueKey<int>(0), color: Colors.red, name: "x", guiDelegate: SignGUIDelegates().x),
-                            PlayerSign(id: ValueKey<int>(0), color: Colors.blue, name: "o", guiDelegate: SignGUIDelegates().o),
+                            PlayerSign(id: ValueKey<int>(1), color: Colors.blue, name: "o", guiDelegate: SignGUIDelegates().o),
                           ],
                           availableColors: [
                             Colors.red,
@@ -360,12 +360,15 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
                 BlocBuilder<SingleDeviceGameLobbyPLayerListCubit, SingleDeviceGameLobbyPLayerListState>(
                     buildWhen: (previous, current) => current is PlayerNameChangedSingleDeviceGameLobbyState,
                     builder: (context, state) {
+                      print(state);
                       return TextField(
                         // TODO: Make the name have max lenght
                         cursorRadius: Radius.circular(2.5),
                         enableSuggestions: true,
                         keyboardType: TextInputType.name,
-                        onChanged: (newValue) => _playerListCubit.changePlayerName(newValue, index),
+                        onChanged: (newValue) {
+                          _playerListCubit.changePlayerName(newValue, index);
+                        },
                         textAlign: TextAlign.center,
                         textAlignVertical: TextAlignVertical.center,
                         decoration: InputDecoration(
@@ -439,6 +442,7 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
                 current is AddedPlayerSingleDeviceGameLobbyPLayerListState ||
                 current is ReorderedPlayersSingleDeviceGameLobbyPLayerListState,
             builder: (context, state) {
+              print("rebuild");
               return Column(
                 children: [
                   ..._playerListCubit.playersList
@@ -456,7 +460,7 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
                     ),
                   SizedBox(height: 12),
                   WhiteButton(
-                    onPressed: _playerListCubit.constructAndAddPlayer,
+                    onPressed: () => _playerListCubit.constructAndAddPlayer(),
                     child: Padding(
                       padding: const EdgeInsets.all(10),
                       child: Row(

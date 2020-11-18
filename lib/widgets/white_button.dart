@@ -52,3 +52,60 @@ class WhiteButton extends StatelessWidget {
     );
   }
 }
+
+class AnimatedWhiteButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final Color bodyColor;
+  final Color borderColor;
+  final BorderRadius borderRadius;
+  final Widget child;
+  final Color highlightColor;
+  final Color splashColor;
+  final Alignment alignment;
+  final bool opaqueBody;
+  final Duration duration;
+
+  const AnimatedWhiteButton({
+    Key key,
+    @required this.duration,
+    this.onPressed,
+    this.alignment,
+    this.bodyColor = Colors.white12,
+    this.borderColor = Colors.white24,
+    this.borderRadius,
+    this.child,
+    this.highlightColor = Colors.transparent,
+    this.splashColor,
+    this.opaqueBody = false,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var br = borderRadius ?? BorderRadius.circular(8);
+    return AnimatedContainer(
+      duration: duration,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: borderColor,
+          width: 1.2,
+        ),
+        color: bodyColor,
+        borderRadius: br,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: br,
+          splashColor: splashColor,
+          highlightColor: highlightColor,
+          onTap: onPressed,
+          child: AnimatedAlign(
+            duration: duration,
+            alignment: alignment ?? Alignment.center,
+            child: child,
+          ),
+        ),
+      ),
+    );
+  }
+}
