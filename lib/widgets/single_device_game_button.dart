@@ -11,6 +11,7 @@ import 'package:tic_tac_toe/models/sd_game_args.dart';
 import 'package:tic_tac_toe/screens/game_screen.dart';
 import 'package:tic_tac_toe/widgets/color_input_form_field.dart';
 import 'package:tic_tac_toe/widgets/number_input_form_field.dart';
+import 'package:tic_tac_toe/widgets/sign_input.dart';
 import 'package:tic_tac_toe/widgets/white_button.dart';
 
 /* ! ATTENTION ! 
@@ -357,29 +358,24 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
           children: [
             Flexible(
               child: _wrapInCard(
-                BlocBuilder<SingleDeviceGameLobbyPLayerListCubit, SingleDeviceGameLobbyPLayerListState>(
-                    buildWhen: (previous, current) => current is PlayerNameChangedSingleDeviceGameLobbyState,
-                    builder: (context, state) {
-                      print(state);
-                      return TextField(
-                        // TODO: Make the name have max lenght
-                        cursorRadius: Radius.circular(2.5),
-                        enableSuggestions: true,
-                        keyboardType: TextInputType.name,
-                        onChanged: (newValue) {
-                          _playerListCubit.changePlayerName(newValue, index);
-                        },
-                        textAlign: TextAlign.center,
-                        textAlignVertical: TextAlignVertical.center,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "Player name",
-                        ),
-                        cursorColor: Colors.white54,
-                        controller: TextEditingController(text: _playerListCubit.playerAt(index).name),
-                        style: Theme.of(context).textTheme.headline6,
-                      );
-                    }),
+                TextField(
+                  // TODO: Make the name have max lenght
+                  cursorRadius: Radius.circular(2.5),
+                  enableSuggestions: true,
+                  keyboardType: TextInputType.name,
+                  onChanged: (newValue) {
+                    _playerListCubit.changePlayerName(newValue, index);
+                  },
+                  textAlign: TextAlign.center,
+                  textAlignVertical: TextAlignVertical.center,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "Player name",
+                  ),
+                  cursorColor: Colors.white54,
+                  controller: TextEditingController(text: _playerListCubit.playerAt(index).name),
+                  style: Theme.of(context).textTheme.headline6,
+                ),
                 margin: EdgeInsets.zero,
               ),
             ),
@@ -394,12 +390,15 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
             //     ),
             //   ),
             // ),
-            WhiteButton(
-              onPressed: () {/* Open sign selector */},
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: _playerListCubit.playersList[index].guiDelegate.guiSmall(context, Colors.white),
-              ),
+            // WhiteButton(
+            //   onPressed: () {/* Open sign selector */},
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(8),
+            //     child: _playerListCubit.playersList[index].guiDelegate.guiSmall(context, Colors.white),
+            //   ),
+            // ),
+            SignInput(
+              thisIndex: index,
             ),
             SizedBox(width: 16),
             ColorInput(
@@ -442,7 +441,7 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
                 current is AddedPlayerSingleDeviceGameLobbyPLayerListState ||
                 current is ReorderedPlayersSingleDeviceGameLobbyPLayerListState,
             builder: (context, state) {
-              print("rebuild");
+              // print("rebuild");
               return Column(
                 children: [
                   ..._playerListCubit.playersList

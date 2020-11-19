@@ -6,7 +6,6 @@ import 'package:tic_tac_toe/bloc/single_device_game_lobby_player_list_cubit.dart
 import 'package:tic_tac_toe/models/player_signs.dart';
 import 'package:tic_tac_toe/widgets/white_button.dart';
 import 'package:my_utilities/color_utils.dart';
-import 'animated_in_out.dart';
 
 typedef void OnColorCangedCallback(Color newValue, ValueKey<int> changedPlayer);
 
@@ -155,6 +154,7 @@ class ColorInput extends StatelessWidget {
         child: SizedBox(
           height: MediaQuery.of(context).size.height / 2.61803398875,
           child: Card(
+            clipBehavior: Clip.hardEdge,
             margin: EdgeInsets.all(16),
             color: Theme.of(context).dialogBackgroundColor.inverted.withOpacity(0.6),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)), // Maybe add border
@@ -173,7 +173,6 @@ class ColorInput extends StatelessWidget {
                                 isOccupied: cubit.isColorOccupied(e) != -1,
                                 isSelected: thisPlayerSign.color == e,
                                 onSelected: () async {
-                                  if (thisPlayerSign.color == e) return;
                                   await cubit.changeColor(
                                     e,
                                     thisIndex,
@@ -259,7 +258,8 @@ class ColorInput extends StatelessWidget {
     return ConstrainedBox(
       constraints: BoxConstraints(minHeight: 30, minWidth: 60),
       child: BlocBuilder<SingleDeviceGameLobbyPLayerListCubit, SingleDeviceGameLobbyPLayerListState>(
-        builder: (context, snapshot) {
+        buildWhen: (previous, current) => current is PlayerColorChangedSingleDeviceGameLobbyState && current.playerIndex == thisIndex,
+        builder: (context, state) {
           return AnimatedWhiteButton(
             duration: Duration(milliseconds: 160),
             alignment: Alignment.centerRight,

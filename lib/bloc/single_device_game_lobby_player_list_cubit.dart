@@ -28,14 +28,24 @@ class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPL
   List<Color> get allColors => List.unmodifiable(_allColors);
 
   List<SignGUIDelegate> _allDelegates;
+  List<SignGUIDelegate> get allDelegates => List.unmodifiable(_allDelegates);
 
   /// Returns -1 if it's not occupied
   int isColorOccupied(Color color) {
     return _playersList.indexWhere((e) => e.color == color);
   }
 
+  /// Returns -1 if it's not occupied
+  int isSignGUIDelegateOccupied(SignGUIDelegate delegate) {
+    return _playersList.indexWhere((e) => e.guiDelegate == delegate);
+  }
+
   Color uncoccupiedColor() {
     return _allColors.firstWhere((c) => _playersList.every((p) => p.color != c));
+  }
+
+  SignGUIDelegate uncoccupiedSignGUIDelegate() {
+    return _allDelegates.firstWhere((d) => _playersList.every((p) => p.guiDelegate != d));
   }
 
   PlayerSign playerOfId(Key id) {
@@ -65,9 +75,19 @@ class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPL
     }
   }
 
-  void changeSignGUIDeleagte(SignGUIDelegate signGUIDelegate, int index) {
-    _playersList[index] = _playersList[index].copyWith(guiDelegate: signGUIDelegate);
-    emit(PlayerSignGUIDelegateChangedSingleDeviceGameLobbyState(index, signGUIDelegate));
+  void changeSignGUIDeleagte(SignGUIDelegate delegate, int index, OnConflictCallback onConflict) async {
+    var occupier = isSignGUIDelegateOccupied(delegate);
+
+    if (occupier == index) return;
+    
+    if (occupier == -1) {
+      _playersList[index] = _playersList[index].copyWith(guiDelegate: delegate);
+      emit(PlayerSignGUIDelegateChangedSingleDeviceGameLobbyState(index, delegate));
+    } else if (await onConflict(occupier) ?? false) {
+      _playersList[occupier] = _playersList[occupier].copyWith(guiDelegate: _playersList[index].guiDelegate);
+      _playersList[index] = _playersList[index].copyWith(guiDelegate: delegate);
+      emit(PlayerSignGUIDelegateChangedSingleDeviceGameLobbyState(index, delegate));
+    }
   }
 
   void changePlayerName(String name, int index) {
@@ -82,7 +102,8 @@ class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPL
 
   void constructAndAddPlayer() {
     var newPlayer = PlayerSign(
-      color: uncoccupiedColor(), // TODO: Make it automatically choose the most contrast color to colors of the existing players
+      // TODO: Make players amount limit
+      color: uncoccupiedColor(),
       id: ValueKey(_lastId++), // Pray it doesn't reach the integer limit
       guiDelegate: SignGUIDelegates.values[_playersList.length],
       name: SignGUIDelegates.values[_playersList.length].defaultName,
@@ -102,8 +123,14 @@ class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPL
 
     _playersList.removeAt(oldIndex);
     _playersList.insert(newIndex, item);
-    print("Reoredering [$oldIndex] -> [$newIndex]");
+    // print("Reoredering [$oldIndex] -> [$newIndex]");
     emit(ReorderedPlayersSingleDeviceGameLobbyPLayerListState(oldIndex));
+  }
+
+  @override
+  void onChange(Change<SingleDeviceGameLobbyPLayerListState> change) {
+    print("$this emitted ${change.nextState}");
+    super.onChange(change);
   }
 }
 

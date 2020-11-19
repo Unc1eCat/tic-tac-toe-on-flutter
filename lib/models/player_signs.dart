@@ -5,27 +5,30 @@ import 'package:flutter/material.dart';
 typedef SignWidgetBuilder = Widget Function(BuildContext context, Color color);
 
 // Represents GUI representation of a sign
-class SignGUIDelegate {
+class SignGUIDelegate extends Equatable {
+  final String id;
   final String defaultName;
   final SignWidgetBuilder guiSmall; // That on the grid
   final SignWidgetBuilder guiMedium; // Usually in turn display
   final SignWidgetBuilder guiLarge; // Usually in win screen
 
   const SignGUIDelegate({
+    @required this.id,
     @required this.defaultName,
     @required this.guiSmall,
     @required this.guiLarge,
     @required this.guiMedium,
   });
 
-  // @override
-  // List<Object> get props => [id];
+  @override
+  List<Object> get props => [id];
 }
 
 class DefaultStringSignGUIDelegate extends SignGUIDelegate {
   DefaultStringSignGUIDelegate(String sign)
       : super(
-        defaultName: sign,
+          id: sign,
+          defaultName: sign,
           guiSmall: (context, color) => Text(sign,
               style: TextStyle(
                 color: Colors.white,
@@ -40,8 +43,7 @@ class DefaultStringSignGUIDelegate extends SignGUIDelegate {
 class SignGUIDelegates {
   SignGUIDelegates._();
 
-  factory SignGUIDelegates()
-  {
+  factory SignGUIDelegates() {
     return _instance;
   }
 
@@ -53,7 +55,7 @@ class SignGUIDelegates {
     values.add(val);
     return val;
   }
-  
+
   final SignGUIDelegate x = _add(DefaultStringSignGUIDelegate("X"));
 
   final SignGUIDelegate o = _add(DefaultStringSignGUIDelegate("O"));
@@ -70,7 +72,6 @@ class SignGUIDelegates {
   final SignGUIDelegate at = _add(DefaultStringSignGUIDelegate("@"));
 
   final SignGUIDelegate exclamationMark = _add(DefaultStringSignGUIDelegate("!"));
-
 }
 
 class PlayerSign extends Equatable {
