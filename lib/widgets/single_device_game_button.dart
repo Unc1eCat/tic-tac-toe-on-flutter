@@ -9,6 +9,7 @@ import 'package:tic_tac_toe/bloc/single_device_game_lobby_player_list_cubit.dart
 import 'package:tic_tac_toe/models/player_signs.dart';
 import 'package:tic_tac_toe/models/sd_game_args.dart';
 import 'package:tic_tac_toe/screens/game_screen.dart';
+import 'package:tic_tac_toe/widgets/animated_in_out.dart';
 import 'package:tic_tac_toe/widgets/color_input_form_field.dart';
 import 'package:tic_tac_toe/widgets/number_input_form_field.dart';
 import 'package:tic_tac_toe/widgets/sign_input.dart';
@@ -89,7 +90,7 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
                                   onSaved: (newValue) => args.gridWidth = newValue,
                                   initialValue: 3,
                                   min: 2,
-                                  max: 20,
+                                  max: 10,
                                 ),
                               ],
                             ),
@@ -108,7 +109,7 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
                                   onSaved: (newValue) => args.gridHeight = newValue,
                                   initialValue: 3,
                                   min: 2,
-                                  max: 20,
+                                  max: 10,
                                 ),
                               ],
                             ),
@@ -127,7 +128,7 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
                               children: [
                                 Flexible(
                                   child: Text(
-                                    "Row lenght required to win",
+                                    "Win strike",
                                     style: Theme.of(context).textTheme.headline6,
                                   ),
                                 ),
@@ -136,7 +137,7 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
                                   onSaved: (newValue) => args.winLenght = newValue,
                                   initialValue: 3,
                                   min: 2,
-                                  max: 20,
+                                  max: 10,
                                 ),
                               ],
                             ),
@@ -161,7 +162,7 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
                             Colors.green,
                             Colors.indigo,
                             Colors.pink,
-                            Colors.deepOrange,
+                            Colors.orangeAccent[400],
                           ],
                           key: _playerSignsListState,
                         ),
@@ -431,6 +432,20 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
     return BlocProvider<SingleDeviceGameLobbyPLayerListCubit>(
       create: (context) => _playerListCubit,
       child: ReorderableList(
+        decoratePlaceholder: (widget, decorationOpacity) => DecoratedPlaceholder(
+          offset: 0,
+          widget: DecoratedBox(
+            child: widget,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(decorationOpacity * 0.1),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: Colors.white.withOpacity(decorationOpacity * 0.4),
+                width: 1.2,
+              ),
+            ),
+          ),
+        ),
         onReorder: (draggedItem, newPosition) {
           _playerListCubit.reorder(draggedItem, newPosition);
           return true;
@@ -441,14 +456,29 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
                 current is AddedPlayerSingleDeviceGameLobbyPLayerListState ||
                 current is ReorderedPlayersSingleDeviceGameLobbyPLayerListState,
             builder: (context, state) {
-              // print("rebuild");
+              var full = _playerListCubit.isFullPlayers();
+
               return Column(
                 children: [
                   ..._playerListCubit.playersList
-                      .map((e) => ReorderableItem(
+                      .map((e) => AnimatedIn(
                             key: e.id,
-                            childBuilder: (context, state) =>
-                                _buildChild(context, state, _playerListCubit.indexOfId(e.id)), // Optimize index
+                            duration: Duration(milliseconds: 300),
+                            builder: (context, child, animation) => FadeTransition(
+                              opacity: animation,
+                              child: SlideTransition(
+                                position: Tween<Offset>(
+                                  begin: Offset(0, 0.8),
+                                  end: Offset(0, 0),
+                                ).animate(animation),
+                                child: child,
+                              ),
+                            ),
+                            child: ReorderableItem(
+                              key: e.id,
+                              childBuilder: (context, state) =>
+                                  _buildChild(context, state, _playerListCubit.indexOfId(e.id)), // Optimize index
+                            ),
                           ))
                       .toList(),
                   if (_playerListCubit.playersList.length < 2) SizedBox(height: 12),
@@ -459,16 +489,34 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
                     ),
                   SizedBox(height: 12),
                   WhiteButton(
-                    onPressed: () => _playerListCubit.constructAndAddPlayer(),
+                    onPressed: full ? null : (() => _playerListCubit.constructAndAddPlayer()),
+                    borderColor: full ? Theme.of(context).errorColor.withOpacity(0.5) : Colors.white24,
+                    bodyColor: full ? Theme.of(context).errorColor.withOpacity(0.1) : Colors.white12,
                     child: Padding(
                       padding: const EdgeInsets.all(10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.add),
-                          Text(" ADD PLAYER"),
-                        ],
-                      ),
+                      child: full
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.person_add_disabled_rounded,
+                                  color: Theme.of(context).errorColor,
+                                ),
+                                Text(
+                                  " FULL",
+                                  style: Theme.of(context).textTheme.button.copyWith(
+                                        color: Theme.of(context).errorColor,
+                                      ),
+                                ),
+                              ],
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.add_rounded),
+                                Text(" ADD PLAYER"),
+                              ],
+                            ),
                     ),
                   ),
                 ],

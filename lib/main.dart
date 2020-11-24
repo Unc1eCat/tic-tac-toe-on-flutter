@@ -34,8 +34,7 @@ class TheApp extends StatelessWidget {
         ),
         textTheme: TextTheme(
           button: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
+            fontSize: 16,
           ),
           headline5: TextStyle(
             fontSize: 20,

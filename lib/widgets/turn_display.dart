@@ -50,12 +50,13 @@ class _TurnDisplayState extends State<TurnDisplay> with StateHelperMixin, Ticker
 
   @override
   Widget build(BuildContext context) {
-    var maxOffset = 201 - 201 / GameCubit.of(context).playerSigns.length;
+    var width = MediaQuery.of(context).size.width / 1.61803398875;
+    var maxOffset = width - width / GameCubit.of(context).playerSigns.length;
     return BlocListenerOfStateType<GameCubit, GameState, TurnChangeGameState>.voidListener(
       listener: _changeTurn,
       child: SizedBox(
         height: 80,
-        width: 201,
+        width: width,
         child: Stack(
           children: [
             Padding(
@@ -85,9 +86,9 @@ class _TurnDisplayState extends State<TurnDisplay> with StateHelperMixin, Ticker
                   top: 3.8,
                   right: 3.8,
                   bottom: 3.8,
-                  left: 3.8 + 201 * GameCubit.of(context).currentTurnIndex / GameCubit.of(context).playerSigns.length,
+                  left: 3.8 + width * GameCubit.of(context).currentTurnIndex / GameCubit.of(context).playerSigns.length,
                 ),
-                width: 201 / GameCubit.of(context).playerSigns.length - 3.8,
+                width: width / GameCubit.of(context).playerSigns.length - 3.8,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   gradient: LinearGradient(
@@ -109,13 +110,13 @@ class _TurnDisplayState extends State<TurnDisplay> with StateHelperMixin, Ticker
                   .toList(),
               // children: [
               // const SizedBox(
-              //   width: 201 / 2,
+              //   width: width / 2,
               //   child: const Center(
               //     child: const Text('X', style: TextStyle(fontSize: 40, color: Colors.black, fontWeight: FontWeight.bold)),
               //   ),
               // ),
               //   const SizedBox(
-              //     width: 201 / 2,
+              //     width: width / 2,
               //     child: const Center(
               //       child: const Text('O', style: TextStyle(fontSize: 40, color: Colors.black, fontWeight: FontWeight.bold)),
               //     ),
@@ -130,10 +131,10 @@ class _TurnDisplayState extends State<TurnDisplay> with StateHelperMixin, Ticker
                     top: 0,
                     bottom: 0,
                     left: maxOffset * _transformValueForLeft(_turnChangeAnimation.value, 4, GameCubit.of(context).playerSigns.length),
-                    // Old: 201 * math.clip(_turnChangeAnimation.value * 2 - 1, 0.0, 1.0) / 2,
+                    // Old: width * math.clip(_turnChangeAnimation.value * 2 - 1, 0.0, 1.0) / 2,
                     right:
                         maxOffset * (1 - _transformValueForRight(_turnChangeAnimation.value, 4, GameCubit.of(context).playerSigns.length)),
-                    // Old: 201 * math.clip(1 - _turnChangeAnimation.value * 2, 0.0, 1.0) / 2,
+                    // Old: width * math.clip(1 - _turnChangeAnimation.value * 2, 0.0, 1.0) / 2,
                   ),
                   height: 80,
                   decoration: BoxDecoration(

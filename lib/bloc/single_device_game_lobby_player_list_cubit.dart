@@ -8,8 +8,9 @@ import 'package:tic_tac_toe/models/sd_game_args.dart';
 typedef Future<bool> OnConflictCallback(int occupier);
 
 class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPLayerListState> {
-  static var _lastId = 0;
+  static const maxPlayers = 7;
 
+  static var _lastId = 0;
   static int get lastId => _lastId;
 
   SingleDeviceGameLobbyPLayerListCubit({
@@ -60,6 +61,11 @@ class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPL
     return _playersList.indexWhere((e) => e.id == id);
   }
 
+  bool isFullPlayers()
+  {
+    return _playersList.length >= maxPlayers;
+  }
+
   Future<void> changeColor(Color color, int index, OnConflictCallback onConflict) async {
     var occupier = isColorOccupied(color);
 
@@ -71,6 +77,7 @@ class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPL
     } else if (await onConflict(occupier) ?? false) {
       _playersList[occupier] = _playersList[occupier].copyWith(color: _playersList[index].color);
       _playersList[index] = _playersList[index].copyWith(color: color);
+      emit(PlayerColorChangedSingleDeviceGameLobbyState(occupier, _playersList[occupier].color));
       emit(PlayerColorChangedSingleDeviceGameLobbyState(index, color));
     }
   }
@@ -86,6 +93,7 @@ class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPL
     } else if (await onConflict(occupier) ?? false) {
       _playersList[occupier] = _playersList[occupier].copyWith(guiDelegate: _playersList[index].guiDelegate);
       _playersList[index] = _playersList[index].copyWith(guiDelegate: delegate);
+      emit(PlayerSignGUIDelegateChangedSingleDeviceGameLobbyState(occupier, _playersList[occupier].guiDelegate));
       emit(PlayerSignGUIDelegateChangedSingleDeviceGameLobbyState(index, delegate));
     }
   }
@@ -101,12 +109,15 @@ class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPL
   }
 
   void constructAndAddPlayer() {
+    if (isFullPlayers()) return;
+
+    var signGUIDelegate = uncoccupiedSignGUIDelegate();
     var newPlayer = PlayerSign(
       // TODO: Make players amount limit
       color: uncoccupiedColor(),
       id: ValueKey(_lastId++), // Pray it doesn't reach the integer limit
-      guiDelegate: SignGUIDelegates.values[_playersList.length],
-      name: SignGUIDelegates.values[_playersList.length].defaultName,
+      guiDelegate: signGUIDelegate,
+      name: signGUIDelegate.defaultName,
     );
     addPlayer(newPlayer);
   }
