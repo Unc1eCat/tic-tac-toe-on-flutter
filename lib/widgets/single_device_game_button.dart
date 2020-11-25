@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
 import 'package:my_utilities/color_utils.dart';
 import 'package:provider/provider.dart';
-import 'package:random_color/random_color.dart';
 import 'package:tic_tac_toe/bloc/single_device_game_lobby_player_list_cubit.dart';
 import 'package:tic_tac_toe/models/player_signs.dart';
 import 'package:tic_tac_toe/models/sd_game_args.dart';
@@ -438,11 +437,20 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
             child: widget,
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(decorationOpacity * 0.1),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: Colors.white.withOpacity(decorationOpacity * 0.4),
-                width: 1.2,
-              ),
+              borderRadius: BorderRadius.circular(5),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.deepPurple[100].withRangedHsvValue(0.8).withOpacity(0.15),
+                  spreadRadius: 2,
+                  blurRadius: 2,
+                ),
+              ],
+              // border: Border.symmetric(
+              //   horizontal: BorderSide(
+              //     color: Colors.white.withOpacity(decorationOpacity * 0.4),
+              //     width: 1.2,
+              //   ),
+              // ),
             ),
           ),
         ),

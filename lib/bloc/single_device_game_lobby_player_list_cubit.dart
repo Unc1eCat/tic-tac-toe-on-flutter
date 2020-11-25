@@ -105,12 +105,14 @@ class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPL
 
   void addPlayer(PlayerSign newPlayer) {
     _playersList.add(newPlayer);
+    print(_playersList);
     emit(AddedPlayerSingleDeviceGameLobbyPLayerListState(newPlayer));
   }
 
   void constructAndAddPlayer() {
     if (isFullPlayers()) return;
 
+    print("Last ID: $lastId");
     var signGUIDelegate = uncoccupiedSignGUIDelegate();
     var newPlayer = PlayerSign(
       // TODO: Make players amount limit
@@ -119,6 +121,7 @@ class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPL
       guiDelegate: signGUIDelegate,
       name: signGUIDelegate.defaultName,
     );
+    print("New last ID: $lastId");
     addPlayer(newPlayer);
   }
 
@@ -135,6 +138,7 @@ class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPL
     _playersList.removeAt(oldIndex);
     _playersList.insert(newIndex, item);
     // print("Reoredering [$oldIndex] -> [$newIndex]");
+    print(_playersList);
     emit(ReorderedPlayersSingleDeviceGameLobbyPLayerListState(oldIndex));
   }
 

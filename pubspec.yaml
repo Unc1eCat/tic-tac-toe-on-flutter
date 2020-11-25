@@ -35,6 +35,8 @@ dependencies:
   flutter_bloc: ^6.0.6
   rainbow_color: ^0.1.1
   animated: ^1.0.1
+  flutter_localizations:
+    sdk: flutter
   flutter_reorderable_list: ^0.1.5
   my_utilities: 
     path: D:\project\Flutter projects\my_utilities
@@ -45,6 +47,7 @@ dependencies:
   cupertino_icons: ^0.1.3
 
 dev_dependencies:
+  intl_translation: ^0.17.6
   flutter_test:
     sdk: flutter
 
@@ -53,6 +56,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
+  
+  generate: true
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
