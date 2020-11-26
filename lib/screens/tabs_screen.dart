@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_utilities/color_utils.dart';
 import 'package:tic_tac_toe/bruh.dart';
+import 'package:tic_tac_toe/screens/settings_screen.dart';
 
 import '../widgets/colored_tab.dart';
 import 'play_tab.dart';
@@ -27,7 +28,7 @@ class _TabsScreenState extends State<TabsScreen> with SingleTickerProviderStateM
         children: [
           PlayTab(),
           HomePage(),
-          PlayTab(),
+          SettingsScreen(),
         ],
       ),
       bottomNavigationBar: Container(

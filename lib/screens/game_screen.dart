@@ -9,6 +9,7 @@ import '../bloc/game_cubit.dart';
 import '../widgets/game_grid.dart';
 import '../widgets/grid_slot_simple.dart';
 import '../widgets/turn_display.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GameScreen extends StatefulWidget {
   static const String ROUTE_NAME = '/game';
@@ -27,7 +28,7 @@ class _GameScreenState extends State<GameScreen> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: Text(result is PlayerWonGameOverResult ? "Player \"${result.winner.name.toUpperCase()}\" won" : "Draw"),
+        title: Text(result is PlayerWonGameOverResult ? AppLocalizations.of(context).gameOverPlayerWonTitle(result.winner.name.toUpperCase()) : "Draw"),
         actions: [
           FlatButton.icon(
             onPressed: () {

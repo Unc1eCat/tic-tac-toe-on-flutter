@@ -1,0 +1,20 @@
+{
+    "appName": "Tic-Tac-Toe",
+    "@appName": {
+        "name": "appName",
+        "description": "Name of the app"
+    },
+    "playOnThisDeviceTitle": "Play on this device",
+    "@playOnThisDeviceTitle": {
+        "name": "playOnThisDevice",
+        "description": "Title of the single device lobby"
+    },
+    "gameOverPlayerWonTitle": "Player \"{playerName}\" has won",
+    "@gameOverPlayerWonTitle": {
+        "name": "gameOverPlayerWonTitle",
+        "description": "Title of game over screen when a player wins",
+        "placeholders": {
+            "playerName": {}
+        }
+    }
+}

@@ -12,10 +12,30 @@ void main() {
   runApp(TheApp());
 }
 
-class TheApp extends StatelessWidget {
+class TheApp extends StatefulWidget {
+  @override
+  TheAppState createState() => TheAppState();
+
+  static TheAppState of(BuildContext context)
+  {
+    return context.findAncestorStateOfType<TheAppState>();
+  }
+}
+
+class TheAppState extends State<TheApp> {
+  Locale _locale;
+  set appLocale(Locale newLocale) => setState(() => this._locale = newLocale);
+  Locale get appLocale => Locale(_locale.languageCode, _locale.countryCode);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      locale: _locale,
+      supportedLocales: [
+        Locale("en"),
+        Locale("ru"),
+      ],
+      onGenerateTitle: (context) => AppLocalizations.of(context).appName,
       localizationsDelegates: [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -23,6 +43,24 @@ class TheApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       theme: ThemeData.dark().copyWith(
+        cardTheme: CardTheme(
+          clipBehavior: Clip.hardEdge,
+          color: Color(0xFF202223),
+          shadowColor: Color(0xE6343434),
+          elevation: 3,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            gapPadding: 10,
+            borderSide: BorderSide(
+              color: Color(0xC2505050),
+            ),
+          ),
+        ),
         tabBarTheme: TabBarTheme(
           indicator: BoxDecoration(),
           unselectedLabelColor: Colors.white54,

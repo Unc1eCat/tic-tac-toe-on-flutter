@@ -1,0 +1,22 @@
+{
+    "appName": "Крестики-Нолики",
+    "@appName": {
+        "name": "appName",
+        "description": "Name of the app"
+    },
+
+    "playOnThisDeviceTitle": "Играть на этом устройстве",
+    "@playOnThisDeviceTitle": {
+        "name": "playOnThisDevice",
+        "description": "Title of the single device lobby"
+    },
+    
+    "gameOverPlayerWonTitle": "\"{playerName}\" победил",
+        "@gameOverPlayerWonTitle": {
+            "name": "gameOverPlayerWonTitle",
+            "description": "Title of game over screen when a player wins",
+            "placeholders": {
+                "counter": {}
+            }
+        }
+}
