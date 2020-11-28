@@ -4,19 +4,49 @@
         "name": "appName",
         "description": "Name of the app"
     },
-
     "playOnThisDeviceTitle": "Играть на этом устройстве",
     "@playOnThisDeviceTitle": {
         "name": "playOnThisDevice",
         "description": "Title of the single device lobby"
     },
-    
     "gameOverPlayerWonTitle": "\"{playerName}\" победил",
-        "@gameOverPlayerWonTitle": {
-            "name": "gameOverPlayerWonTitle",
-            "description": "Title of game over screen when a player wins",
-            "placeholders": {
-                "counter": {}
-            }
+    "@gameOverPlayerWonTitle": {
+        "name": "gameOverPlayerWonTitle",
+        "description": "Title of game over screen when a player wins",
+        "placeholders": {
+            "counter": {}
         }
+    },
+    "languageSelectorSelect": "Выбрать",
+    "@languageSelectorSelect": {
+        "name": "languageSelectorSelect",
+        "description": "Text on button in the language seletor to select the langauge",
+        "placeholders": {}
+    },
+
+    "settingsLanguageTitle": "Язык",
+    "@settingsLanguageTitle": {
+        "name": "settingsLanguageTitle",
+        "description": "Text on laguage settings field in settings",
+        "placeholders": {}
+    },
+    "settingsCredits": "Титры",
+    "@settingsCredits": {
+        "name": "settingsCredits",
+        "description": "Text on credits in settings",
+        "placeholders": {}
+    },
+    "settingsSupportUs": "Покормите разработчика на",
+    "@settingsSupportUs": {
+        "name": "settingsSupportUs",
+        "description": "Text for the 'Suport us on Patreon'",
+        "placeholders": {}
+    },
+
+    "creditsText": "Автор: UncleCat \nРазработчик: UncleCat \nТестер: UncleCat \nДизайнер: UncleCat \nДиректор: UncleCat \nХудожник: Uncle Cat \nМенеджер: Uncle Cat \nМаркетинг: Uncle Cat \nЗвуковой дизайнер: Uncle Cat \n\nАнглийский перевод: Uncle Cat \nРусский перевод: Uncle Cat \n\nОт Uncle Cat на Dart, Flutter и библиотеках с любовью 💖",
+    "@creditsText": {
+        "name": "creditsText",
+        "description": "Text of the credits",
+        "placeholders": {}
+    }
 }

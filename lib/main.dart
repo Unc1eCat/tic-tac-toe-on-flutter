@@ -37,12 +37,13 @@ class TheAppState extends State<TheApp> {
       ],
       onGenerateTitle: (context) => AppLocalizations.of(context).appName,
       localizationsDelegates: [
-        AppLocalizations.delegate,
+        AppLocalizations.delegate, // TODO: Create own translations system where translations of other languages is stored on a remote server
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
       theme: ThemeData.dark().copyWith(
+        accentColor: Colors.lightBlueAccent[400],
         cardTheme: CardTheme(
           clipBehavior: Clip.hardEdge,
           color: Color(0xFF202223),
@@ -81,6 +82,12 @@ class TheAppState extends State<TheApp> {
         textTheme: TextTheme(
           button: TextStyle(
             fontSize: 16,
+            // fontWeight: FontWeight.w500,
+          ),
+          bodyText2: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w300,
+            wordSpacing: 1.8,
           ),
           headline5: TextStyle(
             fontSize: 20,

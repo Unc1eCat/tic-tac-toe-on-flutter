@@ -13,6 +13,7 @@ import 'package:tic_tac_toe/widgets/color_input_form_field.dart';
 import 'package:tic_tac_toe/widgets/number_input_form_field.dart';
 import 'package:tic_tac_toe/widgets/sign_input.dart';
 import 'package:tic_tac_toe/widgets/white_button.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /* ! ATTENTION ! 
 * Whoever writes this form more clear effective and performant is a hero. I would appreciate ur pr.
@@ -213,7 +214,7 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
                 horizontal: 20,
               ),
               child: Text(
-                "Play on this device",
+                AppLocalizations.of(context).playOnThisDeviceTitle,
                 style: Theme.of(context).textTheme.headline5.copyWith(
                       color: Colors.white,
                     ),

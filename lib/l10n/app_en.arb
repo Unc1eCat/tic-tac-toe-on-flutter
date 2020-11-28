@@ -4,11 +4,13 @@
         "name": "appName",
         "description": "Name of the app"
     },
+
     "playOnThisDeviceTitle": "Play on this device",
     "@playOnThisDeviceTitle": {
         "name": "playOnThisDevice",
         "description": "Title of the single device lobby"
     },
+
     "gameOverPlayerWonTitle": "Player \"{playerName}\" has won",
     "@gameOverPlayerWonTitle": {
         "name": "gameOverPlayerWonTitle",
@@ -16,5 +18,38 @@
         "placeholders": {
             "playerName": {}
         }
+    },
+
+    "languageSelectorSelect": "Select",
+    "@languageSelectorSelect": {
+        "name": "languageSelectorSelect",
+        "description": "Text on button in the language seletor to select the langauge",
+        "placeholders": {}
+    },
+
+    "settingsLanguageTitle": "Language",
+    "@settingsLanguageTitle": {
+        "name": "settingsLanguageTitle",
+        "description": "Text on laguage settings field in settings",
+        "placeholders": {}
+    },
+    "settingsCredits": "Credits",
+    "@settingsCredits": {
+        "name": "settingsCredits",
+        "description": "Text on credits in settings",
+        "placeholders": {}
+    }, 
+    "settingsSupportUs": "Feed the creator on",
+    "@settingsSupportUs": {
+        "name": "settingsSupportUs",
+        "description": "Text for the 'Suport us on Patreon'",
+        "placeholders": {}
+    },
+
+    "creditsText": "Author: Uncle Cat \nDeveloper: Uncle Cat \nTester: Uncle Cat \nDesigner: Uncle Cat \nDirector: Uncle Cat \nPainter: Uncle Cat \nManager: Uncle Cat \nMarketing: Uncle Cat \nSound designer: Uncle Cat \n\nEnglish translation: Uncle Cat \nRussian translation: Uncle Cat \n\nBy Uncle Cat in Dart on Flutter and packages with love 💖",
+    "@creditsText": {
+        "name": "creditsText",
+        "description": "Text of the credits",
+        "placeholders": {}
     }
 }
