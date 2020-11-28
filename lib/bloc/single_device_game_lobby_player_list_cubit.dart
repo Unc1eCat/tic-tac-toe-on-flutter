@@ -10,8 +10,8 @@ typedef Future<bool> OnConflictCallback(int occupier);
 class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPLayerListState> {
   static const maxPlayers = 7;
 
-  static var _lastId = 0;
-  static int get lastId => _lastId;
+  var _lastId;
+  int get lastId => _lastId;
 
   SingleDeviceGameLobbyPLayerListCubit({
     List<Color> allColors,
@@ -20,6 +20,7 @@ class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPL
   })  : _allColors = allColors,
         _allDelegates = allDelegates,
         _playersList = playersList,
+        _lastId = playersList.length,
         super(SingleDeviceGameLobbyPLayerListState());
 
   List<PlayerSign> _playersList;
@@ -61,8 +62,7 @@ class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPL
     return _playersList.indexWhere((e) => e.id == id);
   }
 
-  bool isFullPlayers()
-  {
+  bool isFullPlayers() {
     return _playersList.length >= maxPlayers;
   }
 
@@ -86,7 +86,7 @@ class SingleDeviceGameLobbyPLayerListCubit extends Cubit<SingleDeviceGameLobbyPL
     var occupier = isSignGUIDelegateOccupied(delegate);
 
     if (occupier == index) return;
-    
+
     if (occupier == -1) {
       _playersList[index] = _playersList[index].copyWith(guiDelegate: delegate);
       emit(PlayerSignGUIDelegateChangedSingleDeviceGameLobbyState(index, delegate));
