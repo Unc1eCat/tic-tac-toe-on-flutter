@@ -9,6 +9,7 @@ class PlayTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: ListView(
+        physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
         children: [
           Padding(
             padding: const EdgeInsets.all(10),

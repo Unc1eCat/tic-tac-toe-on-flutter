@@ -70,7 +70,10 @@ class GameCubit extends Cubit<GameState> {
   }
 
   Vec2<int> indexToPos(int index) {
-    return Vec2<int>((index % size.y).floor(), (index / size.x).floor());
+
+    // index += 1;
+    print(Vec2<int>((index % size.x).floor(), (index / size.x).floor()));
+    return Vec2<int>((index % size.x).floor(), (index / size.x).floor());
   }
 
   void setSlotSign(Vec2<int> pos) {

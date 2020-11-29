@@ -91,7 +91,8 @@ class SettingsScreen extends StatelessWidget {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(10),
-        child: Column(
+        child: ListView(
+          physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
           children: [
             SizedBox(height: 20),
             _wrapInCard(
@@ -157,7 +158,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 35),
+            SizedBox(height: 20 * 1.61803398875 * 1.61803398875),
             SizedBox(
               height: (MediaQuery.of(context).size.width - 20) * (1 - 1 / 1.61803398875),
               width: double.infinity,
@@ -173,15 +174,19 @@ class SettingsScreen extends StatelessWidget {
                     left: 0,
                     child: Card(
                       elevation: 4,
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
-                          child: Text(
-                            AppLocalizations.of(context).settingsSupportUs,
-                            style: Theme.of(context).textTheme.headline6,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+                              child: Text(
+                                AppLocalizations.of(context).settingsSupportUs,
+                                style: Theme.of(context).textTheme.headline6,
+                              ),
+                            ),
                           ),
-                        ),
+                          SizedBox(width: (MediaQuery.of(context).size.width - 20) * (1 - 1 / 1.61803398875)),
+                        ],
                       ),
                     ),
                   ),

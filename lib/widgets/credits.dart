@@ -10,7 +10,7 @@ class Crdits extends StatelessWidget {
         child: Stack(
           children: [
             SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
+              physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
               child: Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: 0.5 * MediaQuery.of(context).size.width * (1 - 1 / 1.61803398875),

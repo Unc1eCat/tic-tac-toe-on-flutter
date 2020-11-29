@@ -30,7 +30,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
 
   Widget _buildLanguageCard(String languageTitle) {
     return Padding(
-      padding: const EdgeInsets.only(left: 10),
+      padding: const EdgeInsets.only(left: 15, top: 5, bottom: 5, right: 5),
       child: Text(
         languageTitle,
         style: Theme.of(context).textTheme.headline5,
@@ -39,16 +39,19 @@ class _LanguageSelectorState extends State<LanguageSelector> {
   }
 
   Widget _buildSelectedLanguageCard(String languageTitle) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        border: Border.all(width: 1.2, color: Theme.of(context).colorScheme.onBackground),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Text(
-          languageTitle,
-          style: Theme.of(context).textTheme.headline5,
+    return Padding(
+      padding: const EdgeInsets.all(5),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(width: 1.2, color: Theme.of(context).colorScheme.onBackground),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Text(
+            languageTitle,
+            style: Theme.of(context).textTheme.headline5,
+          ),
         ),
       ),
     );
@@ -58,9 +61,9 @@ class _LanguageSelectorState extends State<LanguageSelector> {
   Widget build(BuildContext context) {
     var currentIndex = locutils.localeAndLanguageName.keys.toList().indexOf(Localizations.localeOf(context));
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Column(
+    return Material(
+      color: Colors.transparent,
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -70,11 +73,11 @@ class _LanguageSelectorState extends State<LanguageSelector> {
               physics: FixedExtentScrollPhysics(
                 parent: BouncingScrollPhysics(),
               ),
-              squeeze: 0.7,
+              squeeze: 1,
               useMagnifier: true,
               magnification: 1.4,
               diameterRatio: 2.2,
-              itemExtent: 40,
+              itemExtent: 60,
               children: [
                 for (var i = 0; i < locutils.localeAndLanguageName.length; i++)
                   currentIndex == i

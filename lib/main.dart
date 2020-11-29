@@ -126,7 +126,7 @@ class TheAppState extends State<TheApp> {
         textTheme: TextTheme(
           button: TextStyle(
             fontSize: 16,
-            // fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w500,
           ),
           caption: TextStyle(
             fontSize: 18,
@@ -185,7 +185,12 @@ class TheAppState extends State<TheApp> {
         textTheme: TextTheme(
           button: TextStyle(
             fontSize: 16,
-            // fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w500,
+          ),
+          caption: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w300,
+            wordSpacing: 1.8,
           ),
           bodyText2: TextStyle(
             fontSize: 18,

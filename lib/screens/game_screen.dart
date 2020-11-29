@@ -97,21 +97,24 @@ class _GameScreenState extends State<GameScreen> {
                 child: SizedBox(
                   height: 330,
                   width: 330,
-                  child: GameGrid(
-                    gridHeight: _gameCubit.size.x,
-                    gridWidth: _gameCubit.size.y,
-                    child: GridView(
-                      // TODO: Make it not scrollable
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: _gameCubit.size.x,
-                        crossAxisSpacing: 5,
-                        mainAxisSpacing: 5,
-                        childAspectRatio: 1,
+                  child: Center(
+                    child: GameGrid(
+                      gridHeight: _gameCubit.size.y,
+                      gridWidth: _gameCubit.size.x,
+                      child: GridView(
+                        // TODO: Make it not scrollable
+                        physics: NeverScrollableScrollPhysics(), 
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: _gameCubit.size.x,
+                          crossAxisSpacing: 5,
+                          mainAxisSpacing: 5,
+                          childAspectRatio: 1,
+                        ),
+                        padding: EdgeInsets.zero,
+                        children: [
+                          ...List.generate(_gameCubit.slotsAmount, (i) => GridSlotSimpleWidget(_gameCubit.indexToPos(i), key: ValueKey(i))),
+                        ],
                       ),
-                      padding: EdgeInsets.zero,
-                      children: [
-                        ...List.generate(_gameCubit.slotsAmount, (i) => GridSlotSimpleWidget(_gameCubit.indexToPos(i), key: ValueKey(i))),
-                      ],
                     ),
                   ),
                 ),

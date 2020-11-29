@@ -172,7 +172,14 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
                   if (expanded)
                     Padding(
                       padding: const EdgeInsets.all(8),
-                      child: SizedBox(width: double.infinity, height: 50, child: WhiteButton(child: Text("PLAY"), onPressed: _play)),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: WhiteButton(
+                          child: Text("PLAY", style: Theme.of(context).textTheme.button),
+                          onPressed: _play,
+                        ),
+                      ),
                     ),
                 ],
               ),
@@ -523,7 +530,7 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(Icons.add_rounded),
-                                Text(" ADD PLAYER"),
+                                Text(" ADD PLAYER", style: Theme.of(context).textTheme.button),
                               ],
                             ),
                     ),
