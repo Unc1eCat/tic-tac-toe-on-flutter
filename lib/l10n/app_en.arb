@@ -36,13 +36,19 @@
     "settingsCredits": "Credits",
     "@settingsCredits": {
         "name": "settingsCredits",
-        "description": "Text on credits in settings",
+        "description": "Text on credits button in settings",
         "placeholders": {}
     }, 
     "settingsSupportUs": "Feed the creator on",
     "@settingsSupportUs": {
         "name": "settingsSupportUs",
         "description": "Text for the 'Suport us on Patreon'",
+        "placeholders": {}
+    },
+    "settingsTheme": "Theme",
+    "@settingsTheme": {
+        "name": "settingsTheme",
+        "description": "Text of the theme setting",
         "placeholders": {}
     },
 

@@ -18,17 +18,18 @@ class Crdits extends StatelessWidget {
                 ),
                 child: Text(
                   AppLocalizations.of(context).creditsText,
-                  style: Theme.of(context).textTheme.bodyText2.copyWith(height: 1.5),
+                  style: Theme.of(context).textTheme.caption.copyWith(height: 1.5),
                 ),
               ),
             ),
             Positioned(
-              right: 30 * 1.61803398875,
-              bottom: 30,
+              right: 30,
+              bottom: 30 * 1.61803398875,
               child: IconButton(
                 icon: Icon(
                   Icons.close_rounded,
                   size: 34,
+                  color: Colors.white,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),

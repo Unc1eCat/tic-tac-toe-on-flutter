@@ -42,6 +42,12 @@
         "description": "Text for the 'Suport us on Patreon'",
         "placeholders": {}
     },
+    "settingsTheme": "Цветовая тема",
+    "@settingsTheme": {
+        "name": "settingsTheme",
+        "description": "Text of the theme setting",
+        "placeholders": {}
+    },
 
     "creditsText": "Автор: UncleCat \nРазработчик: UncleCat \nТестер: UncleCat \nДизайнер: UncleCat \nДиректор: UncleCat \nХудожник: Uncle Cat \nМенеджер: Uncle Cat \nМаркетинг: Uncle Cat \nЗвуковой дизайнер: Uncle Cat \n\nАнглийский перевод: Uncle Cat \nРусский перевод: Uncle Cat \n\nОт Uncle Cat на Dart, Flutter и библиотеках с любовью 💖",
     "@creditsText": {

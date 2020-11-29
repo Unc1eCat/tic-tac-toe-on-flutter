@@ -44,8 +44,7 @@ class _TabsScreenState extends State<TabsScreen> with SingleTickerProviderStateM
               index: 0,
               controller: _controller,
               selectedColor: Colors.green,
-              unselectedColor:
-                  Colors.green.blendedWith(Theme.of(context).bottomAppBarColor.blendedWithInversion(0.45), 0.7),
+              unselectedColor: Theme.of(context).bottomAppBarColor.blendedWithInversion(0.9),
             ),
             ColoredTab(
               icon: Icon(Icons.widgets),
@@ -53,7 +52,7 @@ class _TabsScreenState extends State<TabsScreen> with SingleTickerProviderStateM
               index: 1,
               controller: _controller,
               selectedColor: Colors.orange[600],
-              unselectedColor: Colors.deepOrange.blendedWith(Theme.of(context).bottomAppBarColor.blendedWithInversion(0.45), 0.7),
+              unselectedColor: Theme.of(context).bottomAppBarColor.blendedWithInversion(0.9),
             ),
             ColoredTab(
               icon: Icon(Icons.settings),
@@ -61,7 +60,7 @@ class _TabsScreenState extends State<TabsScreen> with SingleTickerProviderStateM
               index: 2,
               controller: _controller,
               selectedColor: Colors.blue,
-              unselectedColor: Colors.blue.blendedWith(Theme.of(context).bottomAppBarColor.blendedWithInversion(0.45), 0.7),
+              unselectedColor: Theme.of(context).bottomAppBarColor.blendedWithInversion(0.9),
             ),
           ],
         ),
