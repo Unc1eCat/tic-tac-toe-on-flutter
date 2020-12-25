@@ -89,7 +89,7 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
                                 NumberInputFormField(
                                   onSaved: (newValue) => args.gridWidth = newValue,
                                   initialValue: 3,
-                                  min: 2,
+                                  min: 1,
                                   max: 10,
                                 ),
                               ],
@@ -108,7 +108,7 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
                                 NumberInputFormField(
                                   onSaved: (newValue) => args.gridHeight = newValue,
                                   initialValue: 3,
-                                  min: 2,
+                                  min: 1,
                                   max: 10,
                                 ),
                               ],

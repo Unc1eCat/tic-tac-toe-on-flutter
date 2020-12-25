@@ -46,8 +46,8 @@ class _GameGridState extends State<GameGrid> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, con) {
-      var yStep = con.maxHeight / widget.gridWidth;
-      var xStep = con.maxWidth / widget.gridHeight;
+      var yStep = con.maxHeight / widget.gridHeight;
+      var xStep = con.maxWidth / widget.gridWidth;
 
       if (xStep < yStep) {
         yStep = xStep;
@@ -118,21 +118,19 @@ class GridPainter extends CustomPainter {
     //     xStep * gridWidth - padding.horizontal,
     //     yStep * gridHeight - padding.vertical);
 
-    var a = Rect.fromLTWH(0, 0, s.width, s.height);
-
     if (animation.isCompleted) {
       for (var i = 1; i < gridWidth; i++) {
-        c.drawLine(Offset(a.left + xStep * i, a.top), Offset(a.left + xStep * i, a.top + a.height), paint);
+        c.drawLine(Offset(xStep * i, 0), Offset(xStep * i, s.height), paint);
       }
       for (var i = 1; i < gridHeight; i++) {
-        c.drawLine(Offset(a.left, a.top + yStep * i), Offset(a.left + a.width, a.top + yStep * i), paint);
+        c.drawLine(Offset(0, yStep * i), Offset(s.width, yStep * i), paint);
       }
     } else {
       for (var i = 1; i < gridWidth; i++) {
         // TODO: Find a more optimized way to check for visibility of the lines
         var value = sequentiallyStartingAnimations(animation.value, i - 1, linesAmount, shift);
         if (value > 0) {
-          c.drawLine(Offset(a.left + xStep * i, a.top), Offset(a.left + xStep * i, a.top + a.height * value), paint);
+          c.drawLine(Offset(xStep * i, 0), Offset(xStep * i, s.height * value), paint);
         } else {
           return;
         }
@@ -141,7 +139,7 @@ class GridPainter extends CustomPainter {
         // TODO: Find a more optimized way to check for visibility of the lines
         var value = sequentiallyStartingAnimations(animation.value, gridWidth + i - 2, linesAmount, shift);
         if (value > 0) {
-          c.drawLine(Offset(a.left, a.top + yStep * i), Offset(a.left + a.width * value, a.top + yStep * i), paint);
+          c.drawLine(Offset(0, yStep * i), Offset(s.width * value, yStep * i), paint);
         } else {
           return;
         }

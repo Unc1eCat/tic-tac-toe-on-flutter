@@ -10,6 +10,8 @@ import '../widgets/game_grid.dart';
 import '../widgets/grid_slot_simple.dart';
 import '../widgets/turn_display.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import './pause_route.dart';
+import 'pause_screen.dart';
 
 class GameScreen extends StatefulWidget {
   static const String ROUTE_NAME = '/game';
@@ -28,7 +30,9 @@ class _GameScreenState extends State<GameScreen> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: Text(result is PlayerWonGameOverResult ? AppLocalizations.of(context).gameOverPlayerWonTitle(result.winner.name.toUpperCase()) : "Draw"),
+        title: Text(result is PlayerWonGameOverResult
+            ? AppLocalizations.of(context).gameOverPlayerWonTitle(result.winner.name.toUpperCase())
+            : "Draw"),
         actions: [
           FlatButton.icon(
             onPressed: () {
@@ -91,42 +95,63 @@ class _GameScreenState extends State<GameScreen> {
           }
         },
         child: Scaffold(
-          body: Stack(
-            children: [
-              Center(
-                child: SizedBox(
-                  height: 330,
-                  width: 330,
-                  child: Center(
-                    child: GameGrid(
-                      gridHeight: _gameCubit.size.y,
-                      gridWidth: _gameCubit.size.x,
-                      child: GridView(
-                        // TODO: Make it not scrollable
-                        physics: NeverScrollableScrollPhysics(), 
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: _gameCubit.size.x,
-                          crossAxisSpacing: 5,
-                          mainAxisSpacing: 5,
-                          childAspectRatio: 1,
+          body: SafeArea(
+            child: Stack(
+              children: [
+                Center(
+                  child: SizedBox(
+                    height: 600,
+                    width: 330,
+                    child: Center(
+                      child: GameGrid(
+                        gridHeight: _gameCubit.size.y,
+                        gridWidth: _gameCubit.size.x,
+                        child: GridView(
+                          physics: NeverScrollableScrollPhysics(),
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: _gameCubit.size.x,
+                            crossAxisSpacing: 5,
+                            mainAxisSpacing: 5,
+                            childAspectRatio: 1,
+                          ),
+                          padding: EdgeInsets.zero,
+                          children: [
+                            ...List.generate(
+                              _gameCubit.slotsAmount,
+                              (i) => GridSlotSimpleWidget(
+                                _gameCubit.indexToPos(i),
+                                key: ValueKey(i),
+                              ),
+                            ),
+                          ],
                         ),
-                        padding: EdgeInsets.zero,
-                        children: [
-                          ...List.generate(_gameCubit.slotsAmount, (i) => GridSlotSimpleWidget(_gameCubit.indexToPos(i), key: ValueKey(i))),
-                        ],
                       ),
                     ),
                   ),
                 ),
-              ),
-              Positioned(
-                bottom: 40,
-                width: MediaQuery.of(context).size.width,
-                child: Center(
-                  child: TurnDisplay(),
+                Positioned(
+                  top: 20,
+                  right: 20 * 1.61803398875,
+                  child: IconButton(
+                    splashRadius: 22,
+                    iconSize: 36,
+                    onPressed: () => Navigator.of(context).push(
+                      PauseRoute(
+                        (context) => PausedScreen(),
+                      ),
+                    ),
+                    icon: Icon(Icons.pause_rounded),
+                  ),
                 ),
-              ),
-            ],
+                Positioned(
+                  bottom: 40,
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: TurnDisplay(),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

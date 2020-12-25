@@ -31,27 +31,10 @@ class _LanguageSelectorState extends State<LanguageSelector> {
   Widget _buildLanguageCard(String languageTitle) {
     return Padding(
       padding: const EdgeInsets.only(left: 15, top: 5, bottom: 5, right: 5),
-      child: Text(
-        languageTitle,
-        style: Theme.of(context).textTheme.headline5,
-      ),
-    );
-  }
-
-  Widget _buildSelectedLanguageCard(String languageTitle) {
-    return Padding(
-      padding: const EdgeInsets.all(5),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border.all(width: 1.2, color: Theme.of(context).colorScheme.onBackground),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Text(
-            languageTitle,
-            style: Theme.of(context).textTheme.headline5,
-          ),
+      child: Center(
+        child: Text(
+          languageTitle,
+          style: Theme.of(context).textTheme.headline5,
         ),
       ),
     );
@@ -68,23 +51,40 @@ class _LanguageSelectorState extends State<LanguageSelector> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Flexible(
-            child: ListWheelScrollView(
-              controller: _contr,
-              physics: FixedExtentScrollPhysics(
-                parent: BouncingScrollPhysics(),
-              ),
-              squeeze: 1,
-              useMagnifier: true,
-              magnification: 1.4,
-              diameterRatio: 2.2,
-              itemExtent: 60,
+            child: Stack(
               children: [
-                for (var i = 0; i < locutils.localeAndLanguageName.length; i++)
-                  currentIndex == i
-                      ? _buildSelectedLanguageCard(
+                ListWheelScrollView(
+                  controller: _contr,
+                  physics: FixedExtentScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
+                  // squeeze: 0.8,
+                  useMagnifier: true,
+                  magnification: 1.2,
+                  diameterRatio: 2.2,
+                  itemExtent: 50,
+                  children: [
+                    for (var i = 0; i < locutils.localeAndLanguageName.length; i++)
+                      _buildLanguageCard(
                           locutils.localeAndLanguageName.values.elementAt(i) + "  " + locutils.localeAndFlag.values.elementAt(i))
-                      : _buildLanguageCard(
-                          locutils.localeAndLanguageName.values.elementAt(i) + "  " + locutils.localeAndFlag.values.elementAt(i))
+                  ],
+                ),
+                Center(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      border: Border.symmetric(
+                        horizontal: BorderSide(
+                          color: Theme.of(context).colorScheme.onBackground,
+                          width: 1.3,
+                        ),
+                      ),
+                    ),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 60,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

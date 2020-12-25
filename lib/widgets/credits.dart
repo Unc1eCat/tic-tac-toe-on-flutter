@@ -8,6 +8,7 @@ class Crdits extends StatelessWidget {
       color: Colors.transparent,
       child: SafeArea(
         child: Stack(
+          fit: StackFit.expand,
           children: [
             SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),

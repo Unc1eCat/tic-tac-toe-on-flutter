@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tic_tac_toe/widgets/settings_tile.dart';
+import '../utils/golden_ration_utils.dart' as gr;
 import 'package:tic_tac_toe/main.dart';
 import 'package:my_utilities/color_utils.dart';
 import 'package:tic_tac_toe/widgets/animated_in_out.dart';
@@ -37,52 +38,12 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Widget _wrapInCard({Widget leading, Widget trailing, BuildContext context}) {
-    // return DecoratedBox(
-    //   decoration: BoxDecoration(
-    //     borderRadius: BorderRadius.circular(10),
-    //     color: Theme.of(context).cardTheme.color,
-    //   ),
-    //   child: Padding(
-    //     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-    //     child: child,
-    //   ),
-    // );
-    return Stack(
-      // fit: StackFit.loose,
-      alignment: Alignment.centerLeft,
-      clipBehavior: Clip.none,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 3),
-          child: Card(
-            elevation: 4,
-            child: SizedBox(
-              width: double.infinity,
-              child: leading,
-            ),
-          ),
-        ),
-        Positioned(
-          right: 0,
-          top: 0,
-          bottom: 0,
-          child: AnimatedIn(
-            duration: Duration(milliseconds: 250),
-            builder: (context, child, animation) => FadeTransition(
-              opacity: animation,
-              child: ScaleTransition(
-                scale: animation,
-                child: child,
-              ),
-            ),
-            child: Card(
-              elevation: 2,
-              color: Theme.of(context).cardColor.blendedWithInversion(0.025),
-              child: trailing,
-            ),
-          ),
-        ),
-      ],
+    return SizedBox(
+      // height: 100,
+      child: SettingsTile(
+        leading: leading,
+        trailing: trailing,
+      ),
     );
   }
 
@@ -112,6 +73,7 @@ class SettingsScreen extends StatelessWidget {
                 child: Text(
                   AppLocalizations.of(context).settingsLanguageTitle,
                   style: Theme.of(context).textTheme.headline6,
+                  softWrap: true,
                 ),
               ),
             ),
@@ -121,7 +83,8 @@ class SettingsScreen extends StatelessWidget {
               trailing: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
                 child: ToggleSwitch(
-                  // labels: ["SYSTEM", "LIGHT", "DARK"],
+                  minHeight: 0,
+                  minWidth: MediaQuery.of(context).size.width * gr.invphi * gr.invphi * gr.invphi * gr.invphi,
                   cornerRadius: 8,
                   labels: ["", "", ""],
                   activeBgColor: Theme.of(context).accentColor,
@@ -158,7 +121,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 20 * 1.61803398875 * 1.61803398875),
+            SizedBox(height: 20 * 1.61803398875),
             SizedBox(
               height: (MediaQuery.of(context).size.width - 20) * (1 - 1 / 1.61803398875),
               width: double.infinity,
@@ -169,7 +132,7 @@ class SettingsScreen extends StatelessWidget {
                     top: 0,
                     bottom: (MediaQuery.of(context).size.width - 20) *
                         (1 - 1 / 1.61803398875) *
-                        (1 - 1 / 1.61803398875), // TODO: Make something like "Phi utils"
+                        (1 - 1 / 1.61803398875),
                     right: 0,
                     left: 0,
                     child: Card(

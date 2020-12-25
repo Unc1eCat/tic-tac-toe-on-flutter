@@ -17,20 +17,20 @@ import 'package:equatable/equatable.dart';
 
 final Map<Locale, String> localeAndLanguageName = {
   Locale("en"): "English",
-  Locale("ru"): "Russian",
-  Locale("it"): "Italian",
-  Locale("fr"): "French",
-  Locale("ja"): "Japanes",
-  Locale("ch"): "Chinese",
-  Locale("ge"): "German",
+  Locale("ru"): "Русский",
+  // Locale("it"): "Italian",
+  // Locale("fr"): "French",
+  // Locale("ja"): "Japanes",
+  // Locale("ch"): "Chinese",
+  // Locale("ge"): "German",
 };
 
 final Map<Locale, String> localeAndFlag = {
   Locale("en"): "🇺🇸",
   Locale("ru"): "🇷🇺",
-  Locale("it"): "🍕",
-  Locale("fr"): "🇫🇷",
-  Locale("jp"): "🇯🇵",
-  Locale("cn"): "🇨🇳",
-  Locale("de"): "🇩🇪",
+  // Locale("it"): "🍕",
+  // Locale("fr"): "🇫🇷",
+  // Locale("jp"): "🇯🇵",
+  // Locale("cn"): "🇨🇳",
+  // Locale("de"): "🇩🇪",
 };

@@ -4,7 +4,8 @@ import 'package:my_utilities/color_utils.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import './screens/pause_screen.dart';
+import './screens/pause_route.dart';
 import 'screens/game_screen.dart';
 import 'screens/tabs_screen.dart';
 import 'package:url_launcher/url_launcher.dart' as ul;
