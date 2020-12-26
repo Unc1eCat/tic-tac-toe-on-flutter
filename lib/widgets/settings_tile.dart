@@ -136,7 +136,7 @@ class RenderSettingsTile extends RenderBox
       BoxConstraints(
         minWidth: 0,
         minHeight: constraints.minHeight,
-        maxWidth: constraints.maxWidth - constraints.maxWidth * gr.invphi * gr.invphi * gr.invphi,
+        maxWidth: constraints.maxWidth - constraints.maxWidth * gr.invphi * gr.invphi,
         maxHeight: constraints.maxHeight,
       ),
       parentUsesSize: true,

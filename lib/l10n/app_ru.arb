@@ -9,12 +9,56 @@
         "name": "playOnThisDevice",
         "description": "Title of the single device lobby"
     },
+    "playOnThisDeviceGridWidth": "Ширина сетки",
+    "@playOnThisDeviceGridWidth": {},
+    "playOnThisDeviceGridHeight": "Высота сетки",
+    "@playOnThisDeviceGridHeight": {},
+    "playOnThisDeviceWinStrike": "Нужно в ряд",
+    "@playOnThisDeviceWinStrike": {},
+    "playOnThisDeviceAddPLayer": "ДОБАВИТЬ ИГРОКА",
+    "@playOnThisDeviceAddPLayer": {},
+    "playOnThisDevicePlay": "ИГРАТЬ",
+    "@playOnThisDevicePlay": {},
+    "playOnThisDevicePlayerNameHint": "Имя игрока",
+    "@playOnThisDevicePlayerNameHint": {},
+    "playOnThisDeviceNotEnoughPlayers": "Мининмум нужно 2 игрока, чтобы можно было играть", 
+    "@playOnThisDeviceNotEnoughPlayers": {},
+    "playOnThisDeviceFullPlayers": "ЛИМИТ", 
+    "@playOnThisDeviceFullPlayers": {},
+    "colorPickerSwapDialogTitle": "Этот цвет кем-то занят. Хотите поменяться цветами?",
+    "@colorPickerSwapDialogTitle": {},
+    "signPickerSwapDialogTitle": "Этот знак кем-то занят. Хотите поменяться знаками?",
+    "@signPickerSwapDialogTitle": {},
+    "gamePauseExit": "Выйти",
+    "@gamePauseExit": {},
+    "gamePauseResume": "Продолжить",
+    "@gamePauseResume": {},
+    "gamePauseRestart": "Заново",
+    "@gamePauseRestart": {},
+    "tabBarPlay": "Играть",
+    "@tabBarPlay": {},
+    "tabBarBrowse": "Найти",
+    "@tabBarBrowse": {},
+    "tabBarSettings": "Настройки",
+    "@tabBarSettings": {},
+    "pickerSwapCancel": "ОТМЕНА",
+    "@pickerSwapCancel": {},
+    "pickerSwapSwap": "ПОМЕНЯТЬСЯ",
+    "@pickerSwapSwap": {},
     "gameOverPlayerWonTitle": "\"{playerName}\" победил",
     "@gameOverPlayerWonTitle": {
         "name": "gameOverPlayerWonTitle",
         "description": "Title of game over screen when a player wins",
         "placeholders": {
             "counter": {}
+        }
+    },
+    "gameOverDraw": "Ничья",
+    "@gameOverDraw": {
+        "name": "gameOverDraw",
+        "description": "Title of game over screen after a draw",
+        "placeholders": {
+            "playerName": {}
         }
     },
     "languageSelectorSelect": "Выбрать",
@@ -46,6 +90,12 @@
     "@settingsTheme": {
         "name": "settingsTheme",
         "description": "Text of the theme setting",
+        "placeholders": {}
+    },
+    "settingsToggleUndoButton": "Включить кнопку отмены в локальных играх",
+    "@settingsToggleUndoButton": {
+        "name": "settingsToggleUndoButton",
+        "description": "Text of the toggle undo button",
         "placeholders": {}
     },
 

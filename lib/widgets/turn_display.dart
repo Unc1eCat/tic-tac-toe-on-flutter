@@ -52,8 +52,10 @@ class _TurnDisplayState extends State<TurnDisplay> with StateHelperMixin, Ticker
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width / 1.61803398875;
     var maxOffset = width - width / GameCubit.of(context).playerSigns.length;
-    return BlocListenerOfStateType<GameCubit, GameState, TurnChangeGameState>.voidListener(
-      listener: _changeTurn,
+    return BlocListener<GameCubit, GameState>(
+      listenWhen: (previous, current) =>
+          current is TurnChangeGameState || (current is ActionUndoneGameState && current.action is TurnUndoable),
+      listener: (_, __) => _changeTurn(),
       child: SizedBox(
         height: 80,
         width: width,
@@ -79,29 +81,32 @@ class _TurnDisplayState extends State<TurnDisplay> with StateHelperMixin, Ticker
                 ),
               ),
             ),
-            BlocBuilderOfStateType<GameCubit, GameState, TurnChangeGameState>(builder: (context, state) {
-              return AnimatedContainer(
-                duration: Duration(milliseconds: 300),
-                margin: EdgeInsets.only(
-                  top: 3.8,
-                  right: 3.8,
-                  bottom: 3.8,
-                  left: 3.8 + width * GameCubit.of(context).currentTurnIndex / GameCubit.of(context).playerSigns.length,
-                ),
-                width: width / GameCubit.of(context).playerSigns.length - 3.8,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  gradient: LinearGradient(
-                    colors: [
-                      GameCubit.of(context).currentSign.color.withRangedHsvSaturation(0.7).withRotatedHsvHue(-5).withOpacity(0.8),
-                      GameCubit.of(context).currentSign.color.withRangedHsvSaturation(0.8).withRotatedHsvHue(10).withOpacity(0.8),
-                    ],
-                    begin: Alignment.bottomLeft,
-                    end: Alignment.topRight,
-                  ),
-                ),
-              );
-            }),
+            BlocBuilder<GameCubit, GameState>(
+                buildWhen: (previous, current) =>
+                    current is TurnChangeGameState || (current is ActionUndoneGameState && current.action is TurnUndoable),
+                builder: (context, state) {
+                  return AnimatedContainer(
+                    duration: Duration(milliseconds: 300),
+                    margin: EdgeInsets.only(
+                      top: 3.8,
+                      right: 3.8,
+                      bottom: 3.8,
+                      left: 3.8 + width * GameCubit.of(context).currentTurnIndex / GameCubit.of(context).playerSigns.length,
+                    ),
+                    width: width / GameCubit.of(context).playerSigns.length - 3.8,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      gradient: LinearGradient(
+                        colors: [
+                          GameCubit.of(context).currentSign.color.withRangedHsvSaturation(0.7).withRotatedHsvHue(-5).withOpacity(0.8),
+                          GameCubit.of(context).currentSign.color.withRangedHsvSaturation(0.8).withRotatedHsvHue(10).withOpacity(0.8),
+                        ],
+                        begin: Alignment.bottomLeft,
+                        end: Alignment.topRight,
+                      ),
+                    ),
+                  );
+                }),
             Row(
               mainAxisSize: MainAxisSize.max,
               children: GameCubit.of(context)

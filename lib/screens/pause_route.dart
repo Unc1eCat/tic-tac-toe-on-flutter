@@ -22,9 +22,9 @@ class PauseRoute<T> extends TransitionRoute<T> {
           child: child,
         ),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 1.2, sigmaY: 1.2),
+          filter: ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5),
           child: ColoredBox(
-            color: Colors.blueGrey[100].withOpacity(0.1),
+            color: Colors.blueGrey[100].withOpacity(0.3),
             child: SizedBox.expand(),
           ),
         ),

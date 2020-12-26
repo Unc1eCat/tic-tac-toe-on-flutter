@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac_toe/widgets/white_button.dart';
+import '../utils/golden_ration_utils.dart' as gr;
 
 class _State {
   bool up;
@@ -31,8 +32,13 @@ class NumberInputFormField extends FormField<_State> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               ConstrainedBox(
-                constraints: BoxConstraints(minWidth: 35, minHeight: 15),
+                constraints: BoxConstraints(
+                  minWidth: 30,
+                  minHeight: 30 * gr.phi,
+                ),
                 child: WhiteButton(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.white24,
                   child: Icon(Icons.chevron_left),
                   onPressed: () {
                     if (state.value.value - 1 < min) return;
@@ -42,8 +48,8 @@ class NumberInputFormField extends FormField<_State> {
               ),
               SizedBox(width: 10),
               SizedBox(
-                width: 30,
-                height: 25,
+                width: 30 * gr.phi,
+                height: 30,
                 child: FittedBox(
                   fit: BoxFit.contain,
                   child: AnimatedSwitcher(
@@ -74,8 +80,13 @@ class NumberInputFormField extends FormField<_State> {
               ),
               SizedBox(width: 10),
               ConstrainedBox(
-                constraints: BoxConstraints(minWidth: 35, minHeight: 15),
+                constraints: BoxConstraints(
+                  minWidth: 30,
+                  minHeight: 30 * gr.phi,
+                ),
                 child: WhiteButton(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.white24,
                   child: Icon(Icons.chevron_right),
                   onPressed: () {
                     if (state.value.value + 1 > max) return;

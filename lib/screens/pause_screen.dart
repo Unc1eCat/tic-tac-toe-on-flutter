@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac_toe/main.dart';
 import '../widgets/beautiful_button.dart';
 import 'package:my_utilities/flutter/widgets/icon_text.dart';
 
 class PausedScreen extends StatelessWidget {
   static const routeName = "/pausedScreen";
+
+  final VoidCallback restartCallback;
+
+  PausedScreen(this.restartCallback);
 
   Widget _buildButton(String label, IconData icon, VoidCallback onPressed, BuildContext context) {
     return SizedBox(
@@ -17,12 +22,12 @@ class PausedScreen extends StatelessWidget {
           children: [
             Icon(
               icon,
-              size: 40,
+              size: 38,
               color: Colors.white.withOpacity(0.95),
             ),
             Text(
               label,
-              style: Theme.of(context).textTheme.headline6.copyWith(height: 1.4),
+              style: Theme.of(context).textTheme.button.copyWith(height: 1.5),
             ),
           ],
         ),
@@ -38,28 +43,71 @@ class PausedScreen extends StatelessWidget {
         alignment: Alignment(1.0, 0.5),
         child: Padding(
           padding: const EdgeInsets.all(32),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildButton(
-                "Exit",
-                Icons.exit_to_app,
-                () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pushNamed("/");
-                },
-                context,
-              ),
-              SizedBox(height: 20),
-              _buildButton(
-                "Resume",
-                Icons.play_arrow_rounded,
-                () => Navigator.of(context).pop(),
-                context,
-              ),
-            ],
-          ),
+          child: MediaQuery.of(context).orientation == Orientation.portrait
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildButton(
+                      TheApp.localization(context).gamePauseRestart,
+                      Icons.replay,
+                      () {
+                        Navigator.of(context).pop();
+                        restartCallback();
+                      },
+                      context,
+                    ),
+                    SizedBox(height: 20),
+                    _buildButton(
+                      TheApp.localization(context).gamePauseExit,
+                      Icons.exit_to_app,
+                      () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pushNamed("/");
+                      },
+                      context,
+                    ),
+                    SizedBox(height: 20),
+                    _buildButton(
+                      TheApp.localization(context).gamePauseResume,
+                      Icons.play_arrow_rounded,
+                      () => Navigator.of(context).pop(),
+                      context,
+                    ),
+                  ],
+                )
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildButton(
+                      TheApp.localization(context).gamePauseRestart,
+                      Icons.replay,
+                      () {
+                        Navigator.of(context).pop();
+                        restartCallback();
+                      },
+                      context,
+                    ),
+                    SizedBox(width: 20),
+                    _buildButton(
+                      TheApp.localization(context).gamePauseExit,
+                      Icons.exit_to_app,
+                      () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pushNamed("/");
+                      },
+                      context,
+                    ),
+                    SizedBox(width: 20),
+                    _buildButton(
+                      TheApp.localization(context).gamePauseResume,
+                      Icons.play_arrow_rounded,
+                      () => Navigator.of(context).pop(),
+                      context,
+                    ),
+                  ],
+                ),
         ),
       ),
     );

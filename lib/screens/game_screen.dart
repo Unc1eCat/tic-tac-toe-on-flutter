@@ -5,6 +5,7 @@ import 'package:my_utilities/math_utils.dart';
 import 'package:tic_tac_toe/models/player_signs.dart';
 import 'package:tic_tac_toe/models/sd_game_args.dart';
 import 'package:tic_tac_toe/widgets/bloc_listener_of_state_type.dart';
+import 'package:tic_tac_toe/widgets/heavy_touch_butotn.dart';
 import '../bloc/game_cubit.dart';
 import '../widgets/game_grid.dart';
 import '../widgets/grid_slot_simple.dart';
@@ -37,7 +38,7 @@ class _GameScreenState extends State<GameScreen> {
           FlatButton.icon(
             onPressed: () {
               Navigator.pop(context);
-              return Navigator.pushReplacementNamed(context, GameScreen.ROUTE_NAME, arguments: args);
+              restart();
             },
             icon: Icon(Icons.replay),
             label: Text("PLAY AGAIN"),
@@ -53,6 +54,10 @@ class _GameScreenState extends State<GameScreen> {
         ],
       ),
     );
+  }
+
+  void restart() {
+    Navigator.pushReplacementNamed(context, GameScreen.ROUTE_NAME, arguments: args);
   }
 
   @override
@@ -132,15 +137,29 @@ class _GameScreenState extends State<GameScreen> {
                 Positioned(
                   top: 20,
                   right: 20 * 1.61803398875,
-                  child: IconButton(
-                    splashRadius: 22,
-                    iconSize: 36,
-                    onPressed: () => Navigator.of(context).push(
-                      PauseRoute(
-                        (context) => PausedScreen(),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      HeavyTouchButton(
+                        onPressed: () => _gameCubit.undo(),
+                        child: Icon(
+                          Icons.undo_rounded,
+                          size: 36,
+                        ),
                       ),
-                    ),
-                    icon: Icon(Icons.pause_rounded),
+                      SizedBox(width: 20),
+                      HeavyTouchButton(
+                        onPressed: () => Navigator.of(context).push(
+                          PauseRoute(
+                            (context) => PausedScreen(restart),
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.pause_rounded,
+                          size: 36,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Positioned(

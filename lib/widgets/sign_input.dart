@@ -8,6 +8,8 @@ import 'package:tic_tac_toe/widgets/swap_dialog.dart';
 import 'package:tic_tac_toe/widgets/white_button.dart';
 import 'package:my_utilities/color_utils.dart';
 
+import '../main.dart';
+
 // TODO: This and the color input require so much refactoring
 
 typedef void OnColorCangedCallback(Color newValue, ValueKey<int> changedPlayer);
@@ -52,8 +54,9 @@ class SignInput extends StatelessWidget {
                                     return await showDialog<bool>(
                                       context: context,
                                       barrierDismissible: false,
-                                      builder: (context) =>
-                                          SwapDialog("This sign is already occupied. Do you want to swap colors to resolve the conflict?"),
+                                      builder: (context) => SwapDialog(
+                                        TheApp.localization(context).signPickerSwapDialogTitle
+                                      ),
                                     );
                                   },
                                 ),

@@ -4,13 +4,47 @@
         "name": "appName",
         "description": "Name of the app"
     },
-
     "playOnThisDeviceTitle": "Play on this device",
     "@playOnThisDeviceTitle": {
         "name": "playOnThisDevice",
         "description": "Title of the single device lobby"
     },
-
+    "playOnThisDeviceGridWidth": "Grid width",
+    "@playOnThisDeviceGridWidth": {},
+    "playOnThisDeviceGridHeight": "Grid height",
+    "@playOnThisDeviceGridHeight": {},
+    "playOnThisDeviceWinStrike": "Win strike",
+    "@playOnThisDeviceWinStrike": {},
+    "playOnThisDeviceAddPLayer": "ADD PLAYER",
+    "@playOnThisDeviceAddPLayer": {},
+    "playOnThisDevicePlay": "PLAY",
+    "@playOnThisDevicePlay": {},
+    "playOnThisDevicePlayerNameHint": "Player name",
+    "@playOnThisDevicePlayerNameHint": {},
+    "playOnThisDeviceNotEnoughPlayers": "There must be at least two players to be able to play",
+    "@playOnThisDeviceNotEnoughPlayers": {},
+    "playOnThisDeviceFullPlayers": "LIMIT",
+    "@playOnThisDeviceFullPlayers": {},
+    "colorPickerSwapDialogTitle": "This color is occupied. Do you want to swap colors?",
+    "@colorPickerSwapDialogTitle": {},
+    "signPickerSwapDialogTitle": "This sign is occupied. Do you want to swap signs?",
+    "@signPickerSwapDialogTitle": {},
+    "gamePauseExit": "Exit",
+    "@gamePauseExit": {},
+    "gamePauseResume": "Resume",
+    "@gamePauseResume": {},
+    "gamePauseRestart": "Restart",
+    "@gamePauseRestart": {},
+    "tabBarPlay": "Play",
+    "@tabBarPlay": {},
+    "tabBarBrowse": "Browse",
+    "@tabBarBrowse": {},
+    "tabBarSettings": "Settings",
+    "@tabBarSettings": {},
+    "pickerSwapCancel": "CANCEL",
+    "@pickerSwapCancel": {},
+    "pickerSwapSwap": "SWAP",
+    "@pickerSwapSwap": {},
     "gameOverPlayerWonTitle": "Player \"{playerName}\" has won",
     "@gameOverPlayerWonTitle": {
         "name": "gameOverPlayerWonTitle",
@@ -19,14 +53,20 @@
             "playerName": {}
         }
     },
-
+    "gameOverDraw": "Draw",
+    "@gameOverDraw": {
+        "name": "gameOverDraw",
+        "description": "Title of game over screen after a draw",
+        "placeholders": {
+            "playerName": {}
+        }
+    },
     "languageSelectorSelect": "Select",
     "@languageSelectorSelect": {
         "name": "languageSelectorSelect",
         "description": "Text on button in the language seletor to select the langauge",
         "placeholders": {}
     },
-
     "settingsLanguageTitle": "Language",
     "@settingsLanguageTitle": {
         "name": "settingsLanguageTitle",
@@ -38,7 +78,7 @@
         "name": "settingsCredits",
         "description": "Text on credits button in settings",
         "placeholders": {}
-    }, 
+    },
     "settingsSupportUs": "Feed the creator on",
     "@settingsSupportUs": {
         "name": "settingsSupportUs",
@@ -51,7 +91,12 @@
         "description": "Text of the theme setting",
         "placeholders": {}
     },
-
+    "settingsToggleUndoButton": "Enable undo turn button in local games",
+    "@settingsToggleUndoButton": {
+        "name": "settingsToggleUndoButton",
+        "description": "Text of the toggle undo button",
+        "placeholders": {}
+    },
     "creditsText": "Author: Uncle Cat \nDeveloper: Uncle Cat \nTester: Uncle Cat \nDesigner: Uncle Cat \nDirector: Uncle Cat \nPainter: Uncle Cat \nManager: Uncle Cat \nMarketing: Uncle Cat \nSound designer: Uncle Cat \n\nEnglish translation: Uncle Cat \nRussian translation: Uncle Cat \n\nBy Uncle Cat in Dart on Flutter and packages with love 💖",
     "@creditsText": {
         "name": "creditsText",

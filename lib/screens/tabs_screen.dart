@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_utilities/color_utils.dart';
 import 'package:tic_tac_toe/bruh.dart';
 import 'package:tic_tac_toe/screens/settings_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../widgets/colored_tab.dart';
 import 'play_tab.dart';
@@ -40,7 +41,7 @@ class _TabsScreenState extends State<TabsScreen> with SingleTickerProviderStateM
           tabs: [
             ColoredTab(
               icon: Icon(Icons.play_arrow),
-              text: "Play",
+              text: AppLocalizations.of(context).tabBarPlay,
               index: 0,
               controller: _controller,
               selectedColor: Colors.green,
@@ -48,7 +49,7 @@ class _TabsScreenState extends State<TabsScreen> with SingleTickerProviderStateM
             ),
             ColoredTab(
               icon: Icon(Icons.widgets),
-              text: "Browse",
+              text: AppLocalizations.of(context).tabBarBrowse,
               index: 1,
               controller: _controller,
               selectedColor: Colors.orange[600],
@@ -56,7 +57,7 @@ class _TabsScreenState extends State<TabsScreen> with SingleTickerProviderStateM
             ),
             ColoredTab(
               icon: Icon(Icons.settings),
-              text: "Settings",
+              text: AppLocalizations.of(context).tabBarSettings,
               index: 2,
               controller: _controller,
               selectedColor: Colors.blue,

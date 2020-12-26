@@ -37,6 +37,7 @@ dependencies:
   url_launcher: ^5.7.10
   animated: ^1.0.1
   toggle_switch: ^0.1.8
+  lite_rolling_switch: ^0.1.1
   flutter_localizations:
     sdk: flutter
   flutter_reorderable_list: ^0.1.5
@@ -84,17 +85,16 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
+  fonts:
+    - family: Blogger
+      fonts:
+        - asset: assets/fonts/BloggerSans.ttf
+        - asset: assets/fonts/BloggerSans-Light.ttf
+          weight: 300
+        - asset: assets/fonts/BloggerSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/BloggerSans-Bold.ttf
+          weight: 700
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

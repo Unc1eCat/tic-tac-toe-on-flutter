@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tic_tac_toe/bloc/single_device_game_lobby_player_list_cubit.dart';
 import 'package:tic_tac_toe/models/player_signs.dart';
+import 'package:tic_tac_toe/screens/bottom_alert_message.dart';
 import 'package:tic_tac_toe/widgets/swap_dialog.dart';
 import 'package:tic_tac_toe/widgets/white_button.dart';
 import 'package:my_utilities/color_utils.dart';
 
+import '../main.dart';
 import 'popup_card.dart';
 
 typedef void OnColorCangedCallback(Color newValue, ValueKey<int> changedPlayer);
@@ -54,18 +56,32 @@ class ColorInput extends StatelessWidget {
                                 isOccupied: cubit.isColorOccupied(e) != -1,
                                 isSelected: thisPlayerSign.color == e,
                                 onSelected: () async {
-                                  await cubit.changeColor(
-                                    e,
-                                    thisIndex,
-                                    (occ) async {
-                                      return await showDialog<bool>(
-                                        context: context,
-                                        barrierDismissible: false,
-                                        builder: (context) => SwapDialog(
-                                            "This color is already occupied. Do you want to swap colors to resolve the conflict?"),
+                                  await cubit.changeColor(e, thisIndex, (occ) {
+                                    Navigator.of(context).push(
+                                      BottomAlertMessage(
+                                        header: Text("Test Test Test"),
+                                        buttons: [
+                                          InkWell(
+                                            child: Text("Test"),
+                                          ),
+                                          InkWell(
+                                            child: Text("Test"),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                      // async {
+                                      //   return await showDialog<bool>(
+                                      //     context: context,
+                                      //     barrierDismissible: false,
+                                      //     builder: (context) =>
+                                      //     SwapDialog(
+                                      //       TheApp.localization(context).colorPickerSwapDialogTitle,
+                                      //     ),
+                                      //   );
+                                      // },
                                       );
-                                    },
-                                  );
                                 },
                               ))
                           .toList(),

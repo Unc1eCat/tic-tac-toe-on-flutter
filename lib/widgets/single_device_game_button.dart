@@ -5,6 +5,7 @@ import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
 import 'package:my_utilities/color_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/bloc/single_device_game_lobby_player_list_cubit.dart';
+import 'package:tic_tac_toe/main.dart';
 import 'package:tic_tac_toe/models/player_signs.dart';
 import 'package:tic_tac_toe/models/sd_game_args.dart';
 import 'package:tic_tac_toe/screens/game_screen.dart';
@@ -37,8 +38,8 @@ Widget _wrapInCard(Widget child, {EdgeInsetsGeometry margin = const EdgeInsets.a
     margin: margin,
     decoration: BoxDecoration(
       border: Border.all(
-        color: Colors.white12,
-        width: 1.2,
+        color: Color.fromRGBO(250, 235, 230, 0.08),
+        width: 1.5,
       ),
       color: Colors.white12,
       borderRadius: BorderRadius.circular(8),
@@ -81,7 +82,7 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
                               children: [
                                 Flexible(
                                   child: Text(
-                                    "Grid width",
+                                    TheApp.localization(context).playOnThisDeviceGridWidth,
                                     style: Theme.of(context).textTheme.headline6,
                                   ),
                                 ),
@@ -100,7 +101,7 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
                               children: [
                                 Flexible(
                                   child: Text(
-                                    "Grid height",
+                                    TheApp.localization(context).playOnThisDeviceGridHeight,
                                     style: Theme.of(context).textTheme.headline6,
                                   ),
                                 ),
@@ -128,7 +129,7 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
                               children: [
                                 Flexible(
                                   child: Text(
-                                    "Win strike",
+                                    TheApp.localization(context).playOnThisDeviceWinStrike,
                                     style: Theme.of(context).textTheme.headline6,
                                   ),
                                 ),
@@ -176,7 +177,10 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
                         width: double.infinity,
                         height: 50,
                         child: WhiteButton(
-                          child: Text("PLAY", style: Theme.of(context).textTheme.button),
+                          child: Text(
+                            TheApp.localization(context).playOnThisDevicePlay,
+                            style: Theme.of(context).textTheme.button,
+                          ),
                           onPressed: _play,
                         ),
                       ),
@@ -187,98 +191,101 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
           )
         : null;
 
-    return Material(
-      clipBehavior: Clip.hardEdge,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      color: Colors.transparent,
-      elevation: 5,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          gradient: LinearGradient(
-            colors: [
-              Colors.blue[200].withRangedHsvSaturation(0.73),
-              Colors.indigoAccent[200].withRangedHsvSaturation(0.55),
-              Colors.blueAccent[100],
-            ],
-            stops: [
-              0.3,
-              0.7,
-              1.0,
-            ],
-            begin: Alignment.centerLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          // TODO: Wrap it in a LimitedBox
-
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 24,
-                horizontal: 20,
-              ),
-              child: Text(
-                AppLocalizations.of(context).playOnThisDeviceTitle,
-                style: Theme.of(context).textTheme.headline5.copyWith(
-                      color: Colors.white,
-                    ),
-              ),
+    return IconTheme(
+      data: IconThemeData(color: Colors.white),
+      child: Material(
+        clipBehavior: Clip.hardEdge,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        color: Colors.transparent,
+        elevation: 5,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            gradient: LinearGradient(
+              colors: [
+                Colors.blue[200].withRangedHsvSaturation(0.73),
+                Colors.indigoAccent[200].withRangedHsvSaturation(0.55),
+                Colors.blueAccent[100],
+              ],
+              stops: [
+                0.3,
+                0.7,
+                1.0,
+              ],
+              begin: Alignment.centerLeft,
+              end: Alignment.bottomRight,
             ),
-            if (expanded) Divider(),
-            Flexible(
-              child: AnimatedSize(
-                alignment: Alignment.topCenter,
-                vsync: this,
-                duration: Duration(milliseconds: 320),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: AnimatedSwitcher(
-                    duration: Duration(milliseconds: 320),
-                    transitionBuilder: (child, animation) {
-                      return SlideTransition(
-                        position: Tween(begin: Offset(0, -0.3), end: Offset(0, 0)).animate(animation),
-                        child: FadeTransition(opacity: animation, child: child),
-                      );
-                    },
-                    child: expanded
-                        ? content
-                        : Material(
-                            color: Colors.transparent,
-                            shadowColor: Colors.transparent,
-                            child: SizedBox.shrink(
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(8),
-                                onTap: () {
-                                  setState(() => expanded = true);
-                                },
-                                child: content,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            // TODO: Wrap it in a LimitedBox
+
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 24,
+                  horizontal: 20,
+                ),
+                child: Text(
+                  AppLocalizations.of(context).playOnThisDeviceTitle,
+                  style: Theme.of(context).textTheme.headline5.copyWith(
+                        color: Colors.white,
+                      ),
+                ),
+              ),
+              if (expanded) Divider(),
+              Flexible(
+                child: AnimatedSize(
+                  alignment: Alignment.topCenter,
+                  vsync: this,
+                  duration: Duration(milliseconds: 320),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: AnimatedSwitcher(
+                      duration: Duration(milliseconds: 320),
+                      transitionBuilder: (child, animation) {
+                        return SlideTransition(
+                          position: Tween(begin: Offset(0, -0.3), end: Offset(0, 0)).animate(animation),
+                          child: FadeTransition(opacity: animation, child: child),
+                        );
+                      },
+                      child: expanded
+                          ? content
+                          : Material(
+                              color: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              child: SizedBox.shrink(
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(8),
+                                  onTap: () {
+                                    setState(() => expanded = true);
+                                  },
+                                  child: content,
+                                ),
                               ),
                             ),
-                          ),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Divider(height: 1),
-            Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () {
-                  setState(() => expanded = !expanded);
-                },
-                child: AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
-                  color: expanded ? Colors.white.withAlpha(40) : Colors.transparent,
-                  padding: const EdgeInsets.all(5),
-                  width: double.infinity,
-                  child: Icon(expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down),
+              Divider(height: 1),
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    setState(() => expanded = !expanded);
+                  },
+                  child: AnimatedContainer(
+                    duration: Duration(milliseconds: 300),
+                    color: expanded ? Colors.white.withAlpha(40) : Colors.transparent,
+                    padding: const EdgeInsets.all(5),
+                    width: double.infinity,
+                    child: Icon(expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -296,7 +303,7 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
 // }
 
 class SingleDeviceGameSettingsPlayerList extends StatefulWidget {
-  /// Set [_playerSigns] to null or don't change them to keep old state
+  /// Set [playerSigns] to null or don't change them to keep old state
   final List<PlayerSign> _playerSigns;
   final List<Color> availableColors;
 
@@ -500,7 +507,7 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
                   if (_playerListCubit.playersList.length < 2) SizedBox(height: 12),
                   if (_playerListCubit.playersList.length < 2)
                     Text(
-                      "There must be at least 2 players to be able to start the game",
+                      TheApp.localization(context).playOnThisDeviceNotEnoughPlayers,
                       style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.red[300]),
                     ),
                   SizedBox(height: 12),
@@ -519,7 +526,7 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
                                   color: Theme.of(context).errorColor,
                                 ),
                                 Text(
-                                  " FULL",
+                                  TheApp.localization(context).playOnThisDeviceFullPlayers,
                                   style: Theme.of(context).textTheme.button.copyWith(
                                         color: Theme.of(context).errorColor,
                                       ),
@@ -530,7 +537,10 @@ class _SingleDeviceGameSettingsPlayerListState extends State<SingleDeviceGameSet
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(Icons.add_rounded),
-                                Text(" ADD PLAYER", style: Theme.of(context).textTheme.button),
+                                Text(
+                                  " " + TheApp.localization(context).playOnThisDeviceAddPLayer,
+                                  style: Theme.of(context).textTheme.button,
+                                ),
                               ],
                             ),
                     ),

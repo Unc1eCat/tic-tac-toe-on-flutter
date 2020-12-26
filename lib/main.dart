@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import './screens/pause_screen.dart';
 import './screens/pause_route.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'screens/game_screen.dart';
 import 'screens/tabs_screen.dart';
 import 'package:url_launcher/url_launcher.dart' as ul;
@@ -23,6 +24,11 @@ class TheApp extends StatefulWidget {
     return context.findAncestorStateOfType<TheAppState>();
   }
 
+  static AppLocalizations localization(BuildContext context)
+  {
+    return AppLocalizations.of(context);
+  }
+
   static Future<void> openPatreon() async {
     if (await ul.canLaunch("https://www.patreon.com/user?u=27971705")) {
       print("sfa");
@@ -33,17 +39,34 @@ class TheApp extends StatefulWidget {
 
 class TheAppState extends State<TheApp> {
   Locale _locale;
-  set appLocale(Locale newLocale) => setState(() => this._locale = newLocale);
+  set appLocale(Locale newLocale) {
+    SharedPreferences.getInstance().then((pref) {
+      pref.setString("languageLocaleLanguageCode", newLocale.languageCode);
+      pref.setString("languageLocaleCountryCode", newLocale.countryCode);
+    });
+
+    setState(() => this._locale = newLocale);
+  }
+
   Locale get appLocale => Locale(_locale.languageCode, _locale.countryCode);
 
-  ThemeMode _theme = ThemeMode.system;
+  var _theme = ThemeMode.system;
   set theme(ThemeMode newValue) {
-    SharedPreferences.getInstance().then((pref) => pref.setInt("themeIndex", theme.index));
+    SharedPreferences.getInstance().then((pref) => pref.setInt("themeIndex", newValue.index));
 
     setState(() => this._theme = newValue);
   }
 
   ThemeMode get theme => _theme;
+
+  var _enableUndoButtonInLocaleGames = false;
+  set enableUndoButtonInLocaleGames(bool newValue) {
+    SharedPreferences.getInstance().then((pref) => pref.setBool("enableUndoButtonInLocalGames", newValue));
+
+    this._enableUndoButtonInLocaleGames = newValue;
+  }
+
+  bool get enableUndoButtonInLocaleGames => _enableUndoButtonInLocaleGames;
 
   Future<void> loadPrefs() async {
     var prefs = await SharedPreferences.getInstance();
@@ -59,13 +82,17 @@ class TheAppState extends State<TheApp> {
       rebuild = true;
     }
 
+    if (prefs.containsKey("enableUndoButtonInLocalGames")) {
+      _enableUndoButtonInLocaleGames = prefs.getBool("enableUndoButtonInLocalGames");
+    }
+
     if (rebuild) {
       setState(() {});
     }
   }
 
   @override
-  Future<void> initState() {
+  void initState() {
     loadPrefs();
 
     super.initState();
@@ -88,7 +115,7 @@ class TheAppState extends State<TheApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      theme: ThemeData.light().copyWith(
+      theme: ThemeData.dark().copyWith(
         accentColor: Colors.lightBlueAccent[400],
         cardTheme: CardTheme(
           clipBehavior: Clip.hardEdge,
@@ -121,7 +148,7 @@ class TheAppState extends State<TheApp> {
           thickness: 1.2,
         ),
         buttonTheme: ButtonThemeData(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           highlightColor: Colors.white24,
         ),
         textTheme: TextTheme(
@@ -143,6 +170,8 @@ class TheAppState extends State<TheApp> {
             fontWeight: FontWeight.w500,
             letterSpacing: 1,
           ),
+        ).apply(
+          fontFamily: "Blogger",
         ),
         splashColor: Colors.blueGrey.withOpacity(0.2),
       ),
@@ -179,7 +208,7 @@ class TheAppState extends State<TheApp> {
           thickness: 1.2,
         ),
         buttonTheme: ButtonThemeData(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           splashColor: Colors.white38,
           highlightColor: Colors.white24,
         ),
@@ -207,6 +236,8 @@ class TheAppState extends State<TheApp> {
             fontWeight: FontWeight.w500,
             letterSpacing: 1,
           ),
+        ).apply(
+          fontFamily: "Blogger",
         ),
         splashColor: Colors.white54.blendedWith(Colors.blue, 0.2),
       ),

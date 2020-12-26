@@ -44,6 +44,10 @@ class GridSlotSimpleWidgetState extends State<GridSlotSimpleWidget> with StateHe
           highlight = true;
           return true;
         }
+        if (current is ActionUndoneGameState && current.action is TurnUndoable && (current.action as TurnUndoable).position == widget.pos) {
+          sign = null;
+          return true;
+        }
         return false;
       },
       builder: (context, state) {

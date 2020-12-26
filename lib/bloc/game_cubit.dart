@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,11 +10,6 @@ import '../models/player_signs.dart';
 import '../widgets/grid_slot_simple.dart';
 
 class GameCubit extends Cubit<GameState> {
-  // TODO: Make grid slots more generic and interfaced
-  static var _dirtyCache = true;
-
-  static GameCubit _cached;
-
   GameCubit({
     // TODO: Add winLenght validation depended on the size
     @required this.size, // TODO: Make it private
@@ -22,18 +19,16 @@ class GameCubit extends Cubit<GameState> {
         this._winLenght = winLenght,
         super(GameState()) {
     _gridSlots = List.generate(size.x, (_) => List.generate(size.y, (_) => null));
-    _dirtyCache = true;
     _signsColorSpectrum = Rainbow(spectrum: _playerSigns.map((e) => e.color).toList());
   }
 
   factory GameCubit.of(BuildContext context) {
-    // if (_dirtyCache) cached = BlocProvider.of<GameCubit>(context);
-    // _dirtyCache = false;
-    // return cached;
     return BlocProvider.of<GameCubit>(context);
   }
 
   final Vec2<int> size;
+
+  final List<Undoable> _actionsRecording = List();
 
   final List<PlayerSign> _playerSigns;
   List<PlayerSign> get playerSigns => List.unmodifiable(_playerSigns);
@@ -70,15 +65,12 @@ class GameCubit extends Cubit<GameState> {
   }
 
   Vec2<int> indexToPos(int index) {
-
-    // index += 1;
-    print(Vec2<int>((index % size.x).floor(), (index / size.x).floor()));
     return Vec2<int>((index % size.x).floor(), (index / size.x).floor());
   }
 
   void setSlotSign(Vec2<int> pos) {
     if (!gridActive) return;
-    
+
     throwIfNotInRange(pos);
 
     _gridSlots[pos.x][pos.y] = _playerSigns[currentTurnIndex];
@@ -86,9 +78,9 @@ class GameCubit extends Cubit<GameState> {
     emit(SetSlotSignGameState(pos, _playerSigns[currentTurnIndex]));
 
     var gameOverCheckResult = checkGameOver();
-    print(gameOverCheckResult);
     if (gameOverCheckResult == null) {
       nextTurn();
+      _actionsRecording.add(TurnUndoable(pos));
     } else {
       gridActive = false;
       emit(GameOverGameState(gameOverCheckResult));
@@ -100,6 +92,13 @@ class GameCubit extends Cubit<GameState> {
     _currentTurnIndex++;
     if (currentTurnIndex >= _playerSigns.length) _currentTurnIndex = 0;
     emit(TurnChangeGameState());
+  }
+
+  void undo() {
+    if (_actionsRecording.isEmpty) return; // Nothing to undo
+    var action = _actionsRecording.removeLast();
+    action.undo(this);
+    emit(ActionUndoneGameState(action));
   }
 
   /// Returns game over check result(winning player or draw). If the game can continue then returns null
@@ -188,6 +187,40 @@ class GameCubit extends Cubit<GameState> {
   }
 }
 
+// UNDOABLE
+
+// Maybe mess with Equatable
+abstract class Undoable {
+  void undo(GameCubit cubit);
+
+  // /// Must return false if actions cannot be redone any further
+  // bool redo(GameCubit cubit);
+}
+
+class TurnUndoable implements Undoable {
+  Vec2<int> position;
+
+  TurnUndoable(this.position);
+
+  // @override
+  // bool redo(GameCubit cubit) {
+  //   cubit._gridSlots[position.x][position.y] = cubit.currentSign;
+  //   cubit._slotsSet++;
+  //   cubit._currentTurnIndex = (cubit._currentTurnIndex + 1) % cubit._playerSigns.length;
+
+  //   return true;
+  // }
+
+  @override
+  bool undo(GameCubit cubit) {
+    cubit._gridSlots[position.x][position.y] = null;
+    cubit._slotsSet--;
+    cubit._currentTurnIndex = (cubit._currentTurnIndex - 1) % cubit._playerSigns.length;
+
+    return true;
+  }
+}
+
 // STATES
 
 class GameState extends Equatable {
@@ -204,6 +237,24 @@ abstract class GridSlotGameState extends GameState {
   List<Object> get props => super.props..add(slotPosition);
 }
 
+class ActionUndoneGameState extends GameState {
+  final Undoable action;
+
+  ActionUndoneGameState(this.action);
+
+  @override
+  List<Object> get props => super.props..add(action);
+}
+
+// class ActionRedoneGameState extends GameState {
+//   final Undoable action;
+
+//   ActionRedoneGameState(this.action);
+
+//   @override
+//   List<Object> get props => super.props..add(action);
+// }
+
 class TurnChangeGameState extends GameState {}
 
 class SetSlotSignGameState extends GridSlotGameState {
@@ -214,7 +265,6 @@ class SetSlotSignGameState extends GridSlotGameState {
   List<Object> get props => super.props..add(sign);
 }
 
-@immutable
 class GameOverGameState extends GameState {
   final GameOverResult result;
 
