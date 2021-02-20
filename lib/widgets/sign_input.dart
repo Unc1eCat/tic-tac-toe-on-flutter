@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_utilities/widget_utils.dart';
 import 'package:tic_tac_toe/bloc/single_device_game_lobby_player_list_cubit.dart';
 import 'package:tic_tac_toe/models/player_signs.dart';
+import 'package:tic_tac_toe/screens/bottom_alert_message.dart';
 import 'package:tic_tac_toe/widgets/popup_card.dart';
 import 'package:tic_tac_toe/widgets/swap_dialog.dart';
 import 'package:tic_tac_toe/widgets/white_button.dart';
@@ -51,11 +52,19 @@ class SignInput extends StatelessWidget {
                                   e,
                                   thisIndex,
                                   (occ) async {
-                                    return await showDialog<bool>(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (context) => SwapDialog(
-                                        TheApp.localization(context).signPickerSwapDialogTitle
+                                    return await Navigator.of(context).push<bool>(
+                                      BottomAlertMessage(
+                                        header: Text(TheApp.localization(context).signPickerSwapDialogTitle),
+                                        buttons: [
+                                          BottomAlertMessageButton(
+                                            child: Text(TheApp.localization(context).pickerSwapSwap),
+                                            onPressed: () => Navigator.pop(context, true),
+                                          ),
+                                          BottomAlertMessageButton(
+                                            child: Text(TheApp.localization(context).pickerSwapCancel),
+                                            onPressed: () => Navigator.pop(context, false),
+                                          )
+                                        ],
                                       ),
                                     );
                                   },

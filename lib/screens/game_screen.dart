@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_utilities/math_utils.dart';
+import 'package:tic_tac_toe/main.dart';
 import 'package:tic_tac_toe/models/player_signs.dart';
 import 'package:tic_tac_toe/models/sd_game_args.dart';
 import 'package:tic_tac_toe/widgets/bloc_listener_of_state_type.dart';
@@ -140,13 +141,14 @@ class _GameScreenState extends State<GameScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      HeavyTouchButton(
-                        onPressed: () => _gameCubit.undo(),
-                        child: Icon(
-                          Icons.undo_rounded,
-                          size: 36,
+                      if (TheApp.of(context).enableUndoButtonInLocaleGames)
+                        HeavyTouchButton(
+                          onPressed: () => _gameCubit.undo(),
+                          child: Icon(
+                            Icons.undo_rounded,
+                            size: 36,
+                          ),
                         ),
-                      ),
                       SizedBox(width: 20),
                       HeavyTouchButton(
                         onPressed: () => Navigator.of(context).push(

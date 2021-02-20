@@ -56,17 +56,19 @@ class ColorInput extends StatelessWidget {
                                 isOccupied: cubit.isColorOccupied(e) != -1,
                                 isSelected: thisPlayerSign.color == e,
                                 onSelected: () async {
-                                  await cubit.changeColor(e, thisIndex, (occ) {
-                                    Navigator.of(context).push(
+                                  await cubit.changeColor(e, thisIndex, (occ) async {
+                                    return await Navigator.of(context).push<bool>(
                                       BottomAlertMessage(
-                                        header: Text("Test Test Test"),
+                                        header: Text(TheApp.localization(context).colorPickerSwapDialogTitle),
                                         buttons: [
-                                          InkWell(
-                                            child: Text("Test"),
+                                          BottomAlertMessageButton(
+                                            child: Text(TheApp.localization(context).pickerSwapSwap),
+                                            onPressed: () => Navigator.pop(context, true),
                                           ),
-                                          InkWell(
-                                            child: Text("Test"),
-                                          ),
+                                          BottomAlertMessageButton(
+                                            child: Text(TheApp.localization(context).pickerSwapCancel),
+                                            onPressed: () => Navigator.pop(context, false),
+                                          )
                                         ],
                                       ),
                                     );

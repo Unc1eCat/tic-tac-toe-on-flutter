@@ -272,6 +272,7 @@ class _SingleDeviceGameButtonState extends State<SingleDeviceGameButton> with Ti
               Material(
                 color: Colors.transparent,
                 child: InkWell(
+                  splashColor: Colors.white24,
                   onTap: () {
                     setState(() => expanded = !expanded);
                   },

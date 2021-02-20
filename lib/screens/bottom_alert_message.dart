@@ -2,10 +2,21 @@ import 'dart:ui';
 
 import 'package:my_utilities/color_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:tic_tac_toe/widgets/heavy_touch_butotn.dart';
+
+class BottomAlertMessageButton {
+  final Widget child;
+  final VoidCallback onPressed;
+
+  BottomAlertMessageButton({
+    @required this.child,
+    @required this.onPressed,
+  });
+}
 
 class BottomAlertMessage<T> extends TransitionRoute<T> {
   final Widget header;
-  final List<Widget> buttons;
+  final List<BottomAlertMessageButton> buttons;
 
   BottomAlertMessage({
     @required this.header,
@@ -14,11 +25,17 @@ class BottomAlertMessage<T> extends TransitionRoute<T> {
 
   @override
   Iterable<OverlayEntry> createOverlayEntries() sync* {
+    final slideAnimation = CurvedAnimation(parent: animation, curve: Curves.easeOutBack);
+    final opacityAnimation = CurvedAnimation(parent: animation, curve: Curves.easeOutSine);
+
     yield OverlayEntry(
-      builder: (context) => BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 0.9, sigmaY: 0.9),
-        child: ColoredBox(
-          color: Colors.black45,
+      builder: (context) => FadeTransition(
+        opacity: animation,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 0.9, sigmaY: 0.9),
+          child: ColoredBox(
+            color: Colors.black45,
+          ),
         ),
       ),
     );
@@ -30,46 +47,58 @@ class BottomAlertMessage<T> extends TransitionRoute<T> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             // mainAxisSize: MainAxisSize.min,
             children: [
-              _BottomAlertDialogCard(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: header,
-                ),
-              ),
-              SizedBox(
-                height: 500,
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 26,
-                  mainAxisSpacing: 12,
-                  children: List<Widget>.generate(
-                    buttons.length,
-                    (i) => AnimatedBuilder(
-                      animation: animation,
-                      builder: (context, child) => SlideTransition(
-                        position: Tween<Offset>(
-                          begin: Offset((i + 1).isOdd ? -1 : 0, 0),
-                          end: Offset((i + 1).isOdd ? -1 : 0, 0),
-                        ).animate(animation),
-                        child: header,
-                      ),
-                      child: SizedBox(
-                        width: 100,
-                        height: 100,
-                        child: Card(
-                          // color: Theme.of(context).cardTheme.color,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(22),
-                            side: BorderSide(
-                              width: 1.4,
-                              color: Theme.of(context).cardTheme.color.blendedWithInversion(0.03),
+              AnimatedBuilder(
+                  animation: animation,
+                  builder: (context, _) => FadeTransition(
+                        opacity: opacityAnimation,
+                        child: SlideTransition(
+                          position: Tween<Offset>(
+                            begin: Offset(0, -1),
+                            end: Offset(0, 0),
+                          ).animate(slideAnimation),
+                          child: _BottomAlertDialogCard(
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: header,
                             ),
                           ),
-                          margin: const EdgeInsets.all(12),
-                          child: buttons[i],
+                        ),
+                      )),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: List<Widget>.generate(
+                  buttons.length,
+                  (i) => AnimatedBuilder(
+                    animation: animation,
+                    builder: (context, _) => FadeTransition(
+                      opacity: opacityAnimation,
+                      child: SlideTransition(
+                        position: Tween<Offset>(
+                          begin: Offset(0, buttons.length - i.toDouble() + 0.5),
+                          end: Offset(0, 0),
+                        ).animate(slideAnimation),
+                        child: HeavyTouchButton(
+                          pressedScale: 0.85,
+                          onPressed: buttons[i].onPressed,
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(22),
+                              side: BorderSide(
+                                width: 1.4,
+                                color: Theme.of(context).cardTheme.color.blendedWithInversion(0.03),
+                              ),
+                            ),
+                            margin: const EdgeInsets.all(10),
+                            child: Padding(
+                              padding: const EdgeInsets.all(14),
+                              child: Center(
+                                child: buttons[i].child,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                      // _BottomAlertDialogCard(child: buttons[i]),
                     ),
                   ),
                 ),
@@ -85,7 +114,7 @@ class BottomAlertMessage<T> extends TransitionRoute<T> {
   bool get opaque => false;
 
   @override
-  Duration get transitionDuration => Duration(milliseconds: 320);
+  Duration get transitionDuration => Duration(milliseconds: 620);
 }
 
 class _BottomAlertDialogCard extends StatelessWidget {

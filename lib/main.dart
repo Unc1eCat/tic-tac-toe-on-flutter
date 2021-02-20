@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:my_utilities/color_utils.dart';
@@ -10,6 +12,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'screens/game_screen.dart';
 import 'screens/tabs_screen.dart';
 import 'package:url_launcher/url_launcher.dart' as ul;
+import 'private_data.dart' as priv;
+import 'package:http/http.dart' as http;
 
 void main() {
   EquatableConfig.stringify = true;
@@ -17,6 +21,12 @@ void main() {
 }
 
 class TheApp extends StatefulWidget {
+  static final backendPort = 1221;
+  static final backendIp = priv.backendIp; // CUSTOMISE: Set your own backend IP here
+  static final appVersion = "0.1";
+
+  static String get backendUrl => backendIp + ":" + backendPort.toString();
+
   @override
   TheAppState createState() => TheAppState();
 
@@ -24,8 +34,7 @@ class TheApp extends StatefulWidget {
     return context.findAncestorStateOfType<TheAppState>();
   }
 
-  static AppLocalizations localization(BuildContext context)
-  {
+  static AppLocalizations localization(BuildContext context) {
     return AppLocalizations.of(context);
   }
 
@@ -37,8 +46,7 @@ class TheApp extends StatefulWidget {
   }
 }
 
-class TheAppState extends State<TheApp> {
-  Locale _locale;
+class TheAppState extends State<TheApp> {Locale _locale;
   set appLocale(Locale newLocale) {
     SharedPreferences.getInstance().then((pref) {
       pref.setString("languageLocaleLanguageCode", newLocale.languageCode);
@@ -94,7 +102,13 @@ class TheAppState extends State<TheApp> {
   @override
   void initState() {
     loadPrefs();
-
+    
+    Future.doWhile(() async {
+      await Future.delayed(Duration(seconds: 6));
+      http.post("http://${TheApp.backendUrl}/game/update_online_status");
+      return true;
+    });
+    
     super.initState();
   }
 
@@ -116,6 +130,7 @@ class TheAppState extends State<TheApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
       theme: ThemeData.dark().copyWith(
+        highlightColor: Colors.white24,
         accentColor: Colors.lightBlueAccent[400],
         cardTheme: CardTheme(
           clipBehavior: Clip.hardEdge,
@@ -153,7 +168,7 @@ class TheAppState extends State<TheApp> {
         ),
         textTheme: TextTheme(
           button: TextStyle(
-            fontSize: 16,
+            fontSize: 17,
             fontWeight: FontWeight.w500,
           ),
           caption: TextStyle(
@@ -176,6 +191,7 @@ class TheAppState extends State<TheApp> {
         splashColor: Colors.blueGrey.withOpacity(0.2),
       ),
       darkTheme: ThemeData.dark().copyWith(
+        highlightColor: Colors.white24,
         accentColor: Colors.lightBlueAccent[400],
         cardTheme: CardTheme(
           clipBehavior: Clip.hardEdge,

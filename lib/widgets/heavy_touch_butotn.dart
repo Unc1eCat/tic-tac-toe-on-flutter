@@ -74,7 +74,10 @@ class _HeavyTouchButtonState extends State<HeavyTouchButton> with TickerProvider
       },
       child: ScaleTransition(
         scale: _anim,
-        child: widget.child,
+        child: DefaultTextStyle(
+          child: widget.child,
+          style: Theme.of(context).textTheme.button,
+        ),
       ),
     );
   }
